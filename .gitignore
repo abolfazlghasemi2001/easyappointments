@@ -31,3 +31,6 @@
 /vendor/
 /metafile
 .DS_Store
+
+# Local dev/test database (sqlite)
+/storage/*.sqlite
