@@ -28,7 +28,8 @@ touched when there is no other extension point, and each such change is listed b
 5. Prefer configuration over patching: if a behaviour can be toggled from the database `settings`
    table or a hook, do that instead of editing a core file.
 6. `vendor/`, `node_modules/`, compiled assets (`*.min.js`, `assets/css/*.css`), `config.php`,
-   `.env` and everything under `storage/*` are **never** committed.
+   `.env` and everything under `storage/*` are **never** committed (`.env.example` with empty
+   placeholders is committed instead, and `.env` is listed in `.gitignore` since step 4).
 
 ## Change log of core-file modifications
 
@@ -71,6 +72,16 @@ Step 5: `application/libraries/Booking_service.php`, `application/libraries/Appo
 `application/models/Waitlist_model.php`, `application/migrations/072_add_booking_integrity.php`,
 `application/migrations/073_create_waitlist_table.php`, `tests/Unit/Booking/*` (three files),
 `tests/Unit/Helper/PhoneHelperTest.php`, `docs/fa/step-05-booking.md`.
+
+Steps 3 and 4: `application/migrations/074_create_otp_codes_table.php`,
+`application/migrations/075_create_sms_messages_table.php`, `application/libraries/Otp_service.php`,
+`application/libraries/Sms_client.php`, `application/libraries/Sms_provider_interface.php`,
+`application/libraries/Sms_provider_textbee.php`, `application/libraries/Sms_provider_mock.php`,
+`application/controllers/Customer.php`, `application/controllers/Sms_maintenance.php`,
+`application/views/layouts/customer_portal_layout.php`, `application/views/pages/customer_portal.php`,
+`assets/js/http/customer_portal_http_client.js`, `assets/js/pages/customer_portal.js`,
+`assets/css/customer_portal.scss`, `application/language/{persian,english}/customer_portal_lang.php`,
+`tests/Unit/Sms/*` (three files), `.env.example`, `docs/fa/step-03-otp.md`, `docs/fa/step-04-textbee.md`.
 
 Tooling/tests/docs: `dev/sandbox/*` (six files), `dev/sandbox/sqlite-dev-db.sh`,
 `tests/Unit/Localization/*` (two files), `tests/Unit/Holidays/HolidaysModelTest.php`,
