@@ -1,0 +1,49 @@
+# ---------------------------------------------------------------------------
+# MySQL settings of the production database container (docker-compose.prod.yml).
+#
+# Mounted read-only as /etc/mysql/conf.d/prod.cnf. MySQL ignores a
+# configuration file that is writable by "other" users, so the file must keep
+# the mode 644 it has in the repository.
+#
+# The server has 2 GB of RAM and hosts the Node.js application of the main site
+# as well, so the buffer pool is intentionally small. Measure with
+# "docker stats db" and "SHOW ENGINE INNODB STATUS" before raising a value.
+#
+# Fork addition - not part of the upstream project (see CUSTOMIZATIONS.md).
+# ---------------------------------------------------------------------------
+
+[mysqld]
+
+# The Persian interface and the customer names must be stored as utf8mb4.
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+
+# 2 GB server shared with another application -> keep the pool small.
+innodb_buffer_pool_size = 256M
+innodb_log_file_size = 64M
+innodb_flush_log_at_trx_commit = 2
+
+# A small installation never needs many connections, and every connection costs
+# memory. php-fpm runs at most 8 workers (see php-fpm-prod.conf).
+max_connections = 60
+
+# Fail fast instead of piling up requests when the server is overloaded.
+max_connect_errors = 100
+wait_timeout = 300
+interactive_timeout = 300
+
+# Log slow queries, so a missing index of the calendar becomes visible.
+slow_query_log = 1
+long_query_time = 2
+
+# The application stores dates in the server time zone (Asia/Tehran, +03:30).
+default_time_zone = '+03:30'
+
+# Skip name resolution: the containers talk to each other by IP.
+skip_name_resolve = ON
+
+[client]
+default-character-set = utf8mb4
+
+[mysql]
+default-character-set = utf8mb4

@@ -1,0 +1,61 @@
+# ---------------------------------------------------------------------------
+# Optional TLS overlay: puts Caddy in front of the stack and obtains/renews the
+# Let's Encrypt certificate of nobat.hoosna1402.ir automatically.
+#
+# Usage (from the repository root, on the server):
+#
+#   docker compose -f docker-compose.prod.yml -f docker-compose.caddy.yml up -d
+#
+# IMPORTANT - the server currently serves the main site (hoosna1402.ir, the
+# Node.js application) as well. Check who owns ports 80 and 443 before this
+# overlay is started:
+#
+#   sudo ss -tlnp | grep -E ':(80|443)\s'
+#
+#   * ports free            -> start this overlay, Caddy terminates TLS.
+#   * nginx/apache owns them-> either move the main site into a Caddy vhost
+#                              (see docs/fa/step-01-production.md, scenario B)
+#                              or keep the current web server and use certbot
+#                              (scenario C). Never start both on port 80/443.
+#
+# The ".env" file provides APP_DOMAIN and APP_HTTP_PORT.
+#
+# Fork addition - not part of the upstream project (see CUSTOMIZATIONS.md).
+# ---------------------------------------------------------------------------
+version: "2.4"
+
+services:
+  caddy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN:-nobat.hoosna1402.ir}
+      ACME_EMAIL: ${ACME_EMAIL:-}
+      TZ: Asia/Tehran
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:2019/config/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    mem_limit: 96m
+    networks:
+      - internal
+
+volumes:
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local
+
+networks:
+  internal:
+    driver: bridge

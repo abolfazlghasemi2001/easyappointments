@@ -1,0 +1,68 @@
+# ---------------------------------------------------------------------------
+# Production image of the Easy!Appointments fork.
+#
+# Differences to the development image (docker/php-fpm/Dockerfile):
+#
+#   * PHP 8.2 (same version as the current server installation),
+#   * only the extensions that the application really needs,
+#   * no xdebug, no mailpit/ssmtp configuration, no LDAP/ODBC support,
+#   * Node.js is present because the assets of the application are compiled on
+#     the server (assets/css/*.css and assets/js/**/*.min.js are not committed),
+#   * the "opcache" extension is enabled and configured by php-prod.ini.
+#
+# Build:  docker compose -f docker-compose.prod.yml build app
+# ---------------------------------------------------------------------------
+FROM php:8.2-fpm
+
+WORKDIR /var/www/html
+
+ENV COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_MEMORY_LIMIT=-1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        git \
+        gnupg \
+        unzip \
+        zip \
+    && curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o /usr/local/bin/install-php-extensions \
+    && chmod +x /usr/local/bin/install-php-extensions \
+    && install-php-extensions \
+        bcmath \
+        curl \
+        exif \
+        gd \
+        gettext \
+        intl \
+        mbstring \
+        mysqli \
+        opcache \
+        pdo_mysql \
+        sockets \
+        zip \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && curl -sLS https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Fail the build (and therefore the deployment) when a required extension is missing.
+RUN php -m | grep -qx 'pdo_mysql' \
+    && php -m | grep -qx 'intl' \
+    && php -m | grep -qx 'gd' \
+    && php -m | grep -qx 'zip' \
+    && php -m | grep -qx 'opcache' \
+    && php -r 'exit(extension_loaded("pdo_mysql") ? 0 : 1);'
+
+# The application code is bind mounted by docker-compose.prod.yml, the image only
+# provides the runtime. The entrypoint validates the mount and starts php-fpm.
+COPY docker/php-fpm/prod-entrypoint.sh /usr/local/bin/prod-entrypoint
+RUN chmod +x /usr/local/bin/prod-entrypoint
+
+EXPOSE 9000
+
+ENTRYPOINT ["prod-entrypoint"]
+CMD ["php-fpm"]

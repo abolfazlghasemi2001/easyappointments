@@ -1,0 +1,76 @@
+# ---------------------------------------------------------------------------
+# Caddyfile of nobat.hoosna1402.ir.
+#
+# Mounted as /etc/caddy/Caddyfile by docker-compose.caddy.yml. Caddy obtains and
+# renews the Let's Encrypt certificate on its own, redirects HTTP to HTTPS and
+# forwards every request to the nginx container of the production stack
+# (docker-compose.prod.yml, service "web").
+#
+# Requirements:
+#   * the DNS "A" record of APP_DOMAIN points at the server,
+#   * ports 80 and 443 of the server are free (no other web server is running),
+#   * the reverse proxy container is attached to the "internal" docker network.
+#
+# Before the first start check who owns the ports:
+#
+#   sudo ss -tlnp | grep -E ':(80|443)\s'
+#
+# If another web server (nginx/apache of the main site) is listening there, do
+# NOT start this overlay: use scenario B or C of docs/fa/step-01-production.md
+# instead, otherwise the main site (hoosna1402.ir) will be unreachable.
+#
+# Fork addition - not part of the upstream project (see CUSTOMIZATIONS.md).
+# ---------------------------------------------------------------------------
+
+{
+	# Email used by Let's Encrypt for expiry warnings. Set ACME_EMAIL in the
+	# ".env" file of the server.
+	email {$ACME_EMAIL}
+
+	# Uncomment the following line while testing, to avoid the Let's Encrypt
+	# rate limit (browsers will warn about the staging certificate):
+	#
+	# acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+
+	# Keep the logs small on a 2 GB server.
+	log {
+		level ERROR
+	}
+}
+
+{$APP_DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# Do not advertise the exact web server version.
+		-Server
+	}
+
+	# The application already blocks these, this is a second line of defence.
+	@blocked path /index.php/health /nginx-health
+	respond @blocked 404
+
+	# Forward everything to nginx. The nginx configuration decides what is a
+	# public file and what is not (see deploy/nginx/default.conf).
+	reverse_proxy web:80 {
+		header_up X-Real-IP {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+
+		# Wait long enough for a slow report export, but not forever.
+		transport http {
+			read_timeout 120s
+		}
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}
+
+# Port 80 is intentionally not declared here: Caddy serves the automatic
+# HTTP->HTTPS redirect and answers the ACME http-01 challenge on its own, as
+# long as the site block above exists and "auto_https" is not disabled.

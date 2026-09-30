@@ -1,0 +1,46 @@
+# ---------------------------------------------------------------------------
+# Start the Easy!Appointments stack when the server boots.
+#
+# The containers already have "restart: unless-stopped", which covers a crash
+# of a single container, but NOT a reboot of the server while the docker daemon
+# itself is stopped. This unit makes the behaviour explicit.
+#
+# Installation on the server (after the first successful deployment):
+#
+#   sudo cp deploy/systemd/ea-compose.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable ea-compose.service
+#   sudo systemctl start ea-compose.service
+#
+# Check:
+#
+#   systemctl status ea-compose.service
+#   journalctl -u ea-compose.service -n 50
+#
+# IMPORTANT: the unit only starts the stack, it never runs a database
+# migration. Migrations stay a manual step (scripts/deploy.sh --with-migrate).
+#
+# Fork addition - not part of the upstream project (see CUSTOMIZATIONS.md).
+# ---------------------------------------------------------------------------
+[Unit]
+Description=Easy!Appointments (nobat.hoosna1402.ir) docker compose stack
+Documentation=file:///var/www/easyappointments/docs/fa/step-01-production.md
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/var/www/easyappointments
+
+# "docker compose" (v2 plugin) with a fallback to the legacy binary for the
+# servers that still run docker-compose 1.29.
+ExecStart=/bin/sh -c 'cd /var/www/easyappointments && (docker compose -f docker-compose.prod.yml up -d --remove-orphans || docker-compose -f docker-compose.prod.yml up -d --remove-orphans)'
+ExecStop=/bin/sh -c 'cd /var/www/easyappointments && (docker compose -f docker-compose.prod.yml stop || docker-compose -f docker-compose.prod.yml stop)'
+
+TimeoutStartSec=300
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target
