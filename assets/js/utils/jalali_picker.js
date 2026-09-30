@@ -97,7 +97,9 @@ window.App.Utils.JalaliPicker = (function () {
                 if (!$wrapper.length) {
                     $wrapper = $('<div/>', { class: 'ea-jalali-wrapper' });
 
-                    $calendar.find('.flatpickr-calendar').append($wrapper);
+                    // The calendar container is the ".flatpickr-calendar" element itself, so the wrapper must be
+                    // appended to it (a find() call would only look into its descendants and silently do nothing).
+                    $calendar.append($wrapper);
                 }
 
                 if (!view) {
@@ -379,6 +381,65 @@ window.App.Utils.JalaliPicker = (function () {
     }
 
     /**
+     * Get the flatpickr pattern of the date format that the application is configured with.
+     *
+     * @return {String}
+     */
+    function inputDatePattern() {
+        const patterns = {
+            YMD: 'YYYY/MM/DD',
+            DMY: 'DD/MM/YYYY',
+            MDY: 'MM/DD/YYYY',
+        };
+
+        return patterns[vars('date_format')] || patterns.YMD;
+    }
+
+    /**
+     * Check whether a value is a Gregorian ISO value.
+     *
+     * The application fills the picker inputs with ISO values ("YYYY-MM-DD[ HH:mm[:ss]]"), which must keep being
+     * treated as Gregorian values. A Jalali value cannot be confused with them, because the Jalali years of today
+     * are far below the Gregorian ones (1405 vs 2026), the same applies to the Persian digits that the users type.
+     *
+     * @param {String} value Input value.
+     *
+     * @return {Boolean}
+     */
+    function isGregorianIsoValue(value) {
+        const match = App.Utils.Jalali.toLatinDigits(value)
+            .trim()
+            .match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+
+        return Boolean(match) && Number(match[1]) >= 1700;
+    }
+
+    /**
+     * Reorder a Jalali value into the year/month/day order expected by the Jalali parser.
+     *
+     * @param {String} value Input value (e.g. "08/07/1405" for a day/month/year installation).
+     *
+     * @return {String}
+     */
+    function reorderJalaliValue(value) {
+        const reordered = App.Utils.Jalali.toLatinDigits(value).trim();
+
+        if (!/DMY|MDY/.test(String(vars('date_format')))) {
+            return reordered;
+        }
+
+        const match = reordered.match(/^(\d{1,4})[\/\-.](\d{1,2})[\/\-.](\d{1,4})([\s\d:]*)$/);
+
+        if (!match) {
+            return reordered;
+        }
+
+        const parts = vars('date_format') === 'DMY' ? [match[3], match[2], match[1]] : [match[3], match[1], match[2]];
+
+        return `${parts.join('/')}${match[4] || ''}`;
+    }
+
+    /**
      * Format a date value for the picker input (Jalali when enabled).
      *
      * @param {Date} date Date value.
@@ -394,7 +455,7 @@ window.App.Utils.JalaliPicker = (function () {
 
         const persianDigits = App.Utils.Jalali.persianDigitsEnabled();
 
-        const datePart = App.Utils.Jalali.format(date, 'YYYY/MM/DD', persianDigits);
+        const datePart = App.Utils.Jalali.format(date, inputDatePattern(), persianDigits);
 
         if (!/[HhiK]/.test(format)) {
             return datePart;
@@ -410,8 +471,9 @@ window.App.Utils.JalaliPicker = (function () {
     /**
      * Parse the value of a picker input.
      *
-     * Jalali values are parsed with the Jalali parser, while ISO (Gregorian) values are parsed with the default
-     * parser, so that the pre-filled values of the application keep working.
+     * Gregorian ISO values (i.e. the values that the application itself fills in) are parsed as Gregorian, while
+     * every other value is treated as a Jalali value that the user typed (in the configured date order and with
+     * either ASCII or Persian digits).
      *
      * @param {String} dateString Input value.
      * @param {String} format flatpickr format.
@@ -419,25 +481,35 @@ window.App.Utils.JalaliPicker = (function () {
      * @return {Date|undefined}
      */
     function parseValue(dateString, format) {
-        if (!dateString) {
+        if (dateString === null || dateString === undefined || dateString === '') {
             return undefined;
         }
 
-        const jalaliDate = App.Utils.Jalali.parse(dateString);
+        // Values that are not strings (Date objects, timestamps, ...) are handled by the default flatpickr parser.
+        if (typeof dateString !== 'string') {
+            return window.flatpickr.parseDate(dateString, format);
+        }
+
+        if (isGregorianIsoValue(dateString)) {
+            const gregorianDate = moment(
+                App.Utils.Jalali.toLatinDigits(dateString),
+                ['YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD HH:mm', 'YYYY-MM-DD'],
+                true,
+            );
+
+            if (gregorianDate.isValid()) {
+                return gregorianDate.toDate();
+            }
+        }
+
+        const jalaliDate = App.Utils.Jalali.parse(reorderJalaliValue(dateString));
 
         if (jalaliDate) {
             return jalaliDate;
         }
 
-        const gregorianDate = moment(dateString, ['YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD HH:mm', 'YYYY-MM-DD'], true);
-
-        if (gregorianDate.isValid()) {
-            return gregorianDate.toDate();
-        }
-
-        const fallback = moment(dateString);
-
-        return fallback.isValid() ? fallback.toDate() : undefined;
+        // The default flatpickr parser handles the remaining cases (timezone aware values, "today", ...).
+        return window.flatpickr.parseDate(dateString, format);
     }
 
     /**

@@ -57,6 +57,7 @@
     "gulp-rename": "^2.1.0",
     "gulp-sass": "^6.0.1",
     "gulp-terser": "^2.1.0",
+    "jsdom": "^24.1.0",
     "postcss-rtlcss": "^6.0.0",
     "prettier": "^3.6.2",
     "sass": "^1.93.2",
@@ -65,6 +66,7 @@
   "scripts": {
     "start": "npx --yes gulp",
     "build": "npx gulp build",
-    "docs": "npx gulp docs"
+    "docs": "npx gulp docs",
+    "test:js": "node tests/js/jalali_picker.test.mjs"
   }
 }
