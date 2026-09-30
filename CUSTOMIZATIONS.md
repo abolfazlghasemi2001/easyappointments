@@ -30,6 +30,13 @@ touched when there is no other extension point, and each such change is listed b
 6. `vendor/`, `node_modules/`, compiled assets (`*.min.js`, `assets/css/*.css`), `config.php`,
    `.env` and everything under `storage/*` are **never** committed (`.env.example` with empty
    placeholders is committed instead, and `.env` is listed in `.gitignore` since step 4).
+7. The deployment files of step 1 (`docker-compose.prod.yml`, `deploy/*`, `scripts/*`) are additive:
+   the upstream `docker-compose.yml` and `docker/nginx/nginx.conf` of the development stack are
+   **not** modified, so an upstream merge cannot conflict with the production setup.
+8. `deploy/nginx/default.conf` and `dev/sandbox/blocked-paths.mjs` describe the same
+   "never served" paths. `tests/nginx/blocking.test.mjs` (run with `npm run test:config`) fails when
+   the two lists drift apart, because a missing rule reopens a critical exposure
+   (see `docs/fa/step-00-audit.md`, gap 33).
 
 ## Change log of core-file modifications
 
@@ -83,6 +90,14 @@ Steps 3 and 4: `application/migrations/074_create_otp_codes_table.php`,
 `assets/css/customer_portal.scss`, `application/language/{persian,english}/customer_portal_lang.php`,
 `tests/Unit/Sms/*` (three files), `.env.example`, `docs/fa/step-03-otp.md`, `docs/fa/step-04-textbee.md`.
 
+Step 1: `config-loader.php`, `docker-compose.prod.yml`, `docker-compose.caddy.yml`,
+`docker/php-fpm/Dockerfile.prod`, `docker/php-fpm/prod-entrypoint.sh`,
+`docker/php-fpm/php-prod.ini`, `docker/php-fpm/php-fpm-prod.conf`, `deploy/nginx/default.conf`,
+`deploy/Caddyfile`, `deploy/mysql/prod.cnf`, `deploy/systemd/ea-compose.service`,
+`application/controllers/Health.php`, `scripts/{deploy,backup,restore,rollback,server-hardening,demo-prod-stack}.sh`,
+`scripts/lib/env.sh`, `dev/sandbox/blocked-paths.mjs`, `tests/nginx/blocking.test.mjs`,
+`docs/fa/step-01-production.md`.
+
 Tooling/tests/docs: `dev/sandbox/*` (six files), `dev/sandbox/sqlite-dev-db.sh`,
 `tests/Unit/Localization/*` (two files), `tests/Unit/Holidays/HolidaysModelTest.php`,
 `docs/fa/step-00-audit.md`, `docs/fa/step-01-analysis.md`, `docs/fa/step-02-localization.md`,
@@ -93,14 +108,26 @@ Tooling/tests/docs: `dev/sandbox/*` (six files), `dev/sandbox/sqlite-dev-db.sh`,
 - `system/` — the whole CodeIgniter core (0 changes).
 - `application/core/` — all `EA_*` classes (0 changes).
 
-## Deployment drift (to be fixed in a later step)
+## Deployment drift (resolved in step 1)
 
-The production server currently runs files that are **not** in this repository
-(a custom root `Dockerfile` based on `php:8.2-fpm` and a custom `docker/nginx/nginx.conf` for
-`/assets/`), while the repository still contains the upstream development `docker-compose.yml`
-(10 services, hard-coded `secret`/`password` credentials). Planned in step 1 of the roadmap:
+The production server used to run files that were **not** in this repository (a custom root
+`Dockerfile` based on `php:8.2-fpm` and a custom `docker/nginx/nginx.conf` for `/assets/`), while
+the repository only contained the upstream development `docker-compose.yml` (10 services with
+hard-coded `secret`/`password` credentials). Step 1 removed that drift:
 
-- commit an environment-driven `docker-compose.yml` (no hard-coded secrets),
-- commit the production `Dockerfile` and the hardened `docker/nginx/*.conf`
-  (must deny `/storage`, `/application`, `/system`, `/docs`, `/dev`, `/tests`, `/config.php`),
-- add `.env.example` and an `.env` loader, and make the app fail fast when a required key is missing.
+| Before (server only) | Now (in the repository) |
+| --- | --- |
+| root `Dockerfile` (php:8.2-fpm, not committed) | `docker/php-fpm/Dockerfile.prod` |
+| unknown compose file with 3-4 services | `docker-compose.prod.yml` (db + app + web, no hard-coded secret) |
+| custom nginx config "for /assets/" | `deploy/nginx/default.conf` (denies `/storage`, `/application`, `/system`, `/docs`, `/dev`, `/tests`, `/config.php`, every other `.php`) |
+| credentials inside `config.php` on the server | `.env` (never committed) + `config-loader.php` + `.env.example` |
+| no TLS | `deploy/Caddyfile` + `docker-compose.caddy.yml` (Let's Encrypt) |
+| no backup/restore procedure | `scripts/backup.sh`, `scripts/restore.sh`, `scripts/rollback.sh` |
+| no health endpoint | `application/controllers/Health.php` (`/index.php/health`) |
+
+The upstream `docker-compose.yml` stays untouched for the development stack; the production stack is
+a separate file, so a future `git merge upstream/main` cannot break the deployment.
+
+The old `config.php` of an existing installation keeps working: `config-loader.php` only defines the
+`Config` class when the file did not define it already, so an installation can keep its classic
+`config.php` and use `.env` only for the optional keys (TextBee, cron keys, backup directory).
