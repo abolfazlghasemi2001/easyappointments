@@ -38,3 +38,7 @@
 # Sandbox development tooling (php-wasm runtime)
 /dev/sandbox/node_modules/
 /dev/sandbox/package-lock.json
+
+# Environment configuration (secrets only live on the server, never in the repository)
+.env
+!.env.example
