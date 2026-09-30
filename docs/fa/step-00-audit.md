@@ -426,3 +426,52 @@ docker exec <container> php index.php console migrate   # خروجی باید «
 | `future_booking_limit` | جدول `ea_settings` | پیش‌فرض ۹۰ روز |
 | `appointment_status_options` | جدول `ea_settings` | `["Booked","Confirmed","Rescheduled","Cancelled","Draft"]` |
 | `calendar_type` / `persian_digits` / `display_timezone` / `first_weekday` | جدول `ea_settings` (migration 071) | `jalali` / `1` / `Asia/Tehran` / `saturday` |
+
+---
+
+## بخش ۱۲ — پیگیری مرحله ۰ (تصمیم‌های ثبت‌شده و اسکریپت ممیزی سرور)
+
+### ۱۲-۱) تصمیم‌های تأییدشده شما (۱۴۰۵/۰۷/۰۸)
+
+| موضوع | تصمیم |
+| --- | --- |
+| راه دسترسی به سرور | **اجرای اسکریپت فقط-خواندنی توسط شما** و ارسال خروجی به من (بدون ردوبدل‌کردن رمز در چت) |
+| دامنه | **زیردامنه‌ای از `hoosna1402.ir`** — نام دقیق زیردامنه در گام ۱ نهایی و ثبت می‌شود (پیشنهاد: `nobat.hoosna1402.ir`). هیچ تغییر DNS بدون تأیید صریح شما انجام نمی‌شود. |
+| نقشه راه بخش ۶ | در انتظار متن اصلی «مراحل ۱ تا ۱۰» از سوی شما؛ تا رسیدن آن، هیچ کاری روی گام ۱ آغاز نمی‌شود |
+
+### ۱۲-۲) اسکریپت ممیزی فقط-خواندنی
+
+فایل: `scripts/server-audit.sh` (این فایل هیچ تغییری در برنامه ایجاد نمی‌کند).
+
+**تضمین‌های ایمنی:**
+
+- هیچ فایلی در مسیر پروژه ساخته/تغییر/حذف نمی‌شود.
+- هیچ کانتینری start/stop/create/rm نمی‌شود؛ `systemctl` هیچ فرمان تغییردهنده‌ای اجرا نمی‌شود.
+- هیچ مهاجرت، seed، install یا backup اجرا نمی‌شود (دستور `php index.php console install` که رمز `administrator` می‌سازد، **عمداً حذف شده است**).
+- محتوای `config.php` هرگز چاپ نمی‌شود؛ فقط «وجود کلید» و مقدار `DEBUG_MODE`/`BASE_URL`/`LANGUAGE`.
+- مقادیر حساس در کل خروجی خودکار ماسک می‌شوند (الگوی `password|secret|token|api_key`).
+- تنها نوشتن روی دیسک، فایل موقت `/tmp/.ea_svc` (نام سرویس‌های compose) و گزارش `/tmp/server-audit-report.txt` است.
+
+**دستورهای `docker` که اجرا می‌شوند (همه فقط-خواندنی):** `docker version`, `docker ps -a`, `docker inspect --format` (فقط restart policy و bindها، بدون env)، `docker images`, `docker system df`, `docker exec <nginx> nginx -v|-t|cat default.conf`, `docker exec <php> php -v|-i|-m`, `docker exec <mysql> mysql -e "SELECT ..."` (فقط SELECT/SHOW).
+**دستورهای سیستمی:** `ss -tlnp`, `ufw status`, `iptables -S`, `free -h`, `df -h`, `swapon --show`, `ps`, `crontab -l`, `systemctl list-timers --all`, `curl` به `127.0.0.1:9090`.
+
+**نحوه اجرا روی سرور:**
+
+```bash
+# جای SHA را از پیام من بردارید (نسخه قفل‌شده روی یک کامیت مشخص):
+curl -fsSL -o /tmp/server-audit.sh \
+  https://raw.githubusercontent.com/abolfazlghasemi2001/easyappointments/<COMMIT_SHA>/scripts/server-audit.sh
+
+# اگر خواستید قبل از اجرا بخوانید:
+less /tmp/server-audit.sh
+
+bash /tmp/server-audit.sh | tee /tmp/server-audit-report.txt
+```
+
+سپس فایل `/tmp/server-audit-report.txt` را برای من بفرستید (پیش از ارسال، یک نگاه بیندازید و هر چیزی که
+خصوصی می‌دانید را حذف کنید).
+
+**چیزهایی که گزارش به آن‌ها پاسخ می‌دهد:** نصب‌شدن wizard (وجود `config.php` + نسخه جدول `ea_migrations` +
+حساب‌های موجود و نقش‌ها)، افشای وب مسیرهای حساس (`config.php`, `storage/*`, `docs/`, `tests/`, `dev/`)،
+کانفیگ واقعی nginx، پورت‌های باز و فایروال، تنظیمات PHP (display_errors، variables_order، opcache)،
+کاربران MySQL و میزبان‌های مجاز، مقدار کلیدهای تنظیمات برنامه، بکاپ‌های موجود و سن آن‌ها، swap و منابع.
