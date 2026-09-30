@@ -80,6 +80,9 @@ class Booking extends EA_Controller
         $this->load->library('availability');
         $this->load->library('webhooks_client');
         $this->load->library('jitsi_client');
+
+        // FORK: booking integrity helpers (conflict check, payment hold, waitlist) - see CUSTOMIZATIONS.md #16.
+        $this->load->library('booking_service');
     }
 
     /**
@@ -542,12 +545,18 @@ class Booking extends EA_Controller
 
             $appointment_status_options_json = setting('appointment_status_options', '[]');
             $appointment_status_options = json_decode($appointment_status_options_json, true) ?? [];
-            $appointment['status'] = $appointment_status_options[0] ?? null;
+            $appointment['status'] = $appointment_status_options[0] ?? Appointment_status::INITIAL;
             $appointment['end_datetime'] = $this->appointments_model->calculate_end_datetime($appointment);
 
             $this->appointments_model->only($appointment, $this->allowed_appointment_fields);
 
-            $appointment_id = $this->appointments_model->save($appointment);
+            // FORK: booking integrity - apply the initial status (and the optional payment hold) and store the record
+            // through the booking service, which re-checks the slot inside a transaction. Without this, two
+            // simultaneous requests could both pass the availability check and create a duplicate booking.
+            // See CUSTOMIZATIONS.md #16.
+            $this->booking_service->apply_initial_state($appointment);
+
+            $appointment_id = $this->booking_service->save_appointment($appointment);
             $appointment = $this->appointments_model->find($appointment_id);
 
             $company_color = setting('company_color');
