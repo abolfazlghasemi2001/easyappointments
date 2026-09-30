@@ -1431,7 +1431,7 @@ App.Utils.CalendarTableView = (function () {
         const $wrapper = $('<div/>', {class: 'calendar-wrapper'}).appendTo($providerColumn);
 
         const {columnFormat, timeFormat, slotTimeFormat} = getFormatSettings();
-        const firstWeekdayNumber = App.Utils.Date.getWeekdayId(vars('first_weekday'));
+        const firstWeekdayNumber = App.Utils.Jalali.firstDayOfWeek();
 
         const fullCalendar = new FullCalendar.Calendar($wrapper[0], {
             locale: vars('language_code'),

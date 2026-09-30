@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="<?= config('language_code') ?>">
+<html lang="<?= config('language_code') ?>" dir="<?= app_text_direction() ?>">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,9 +23,12 @@
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/vendor/cookieconsent/cookieconsent.min.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/vendor/flatpickr/flatpickr.min.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/vendor/flatpickr/material_green.min.css') ?>">
-    <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/themes/' . vars('theme') . '.css') ?>">
-    <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/general.css') ?>">
-    <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/frontend.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/themes/' . vars('theme') . '.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/general.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/frontend.css') ?>">
+<?php if (is_rtl()): ?>
+    <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/persian.css') ?>">
+<?php endif; ?>
 
     <?php component('company_color_style', ['company_color' => vars('company_color')]); ?>
 
@@ -81,6 +84,8 @@
 
 <script src="<?= asset_url('assets/js/app.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/date.js') ?>"></script>
+<script src="<?= asset_url('assets/js/utils/jalali_date.js') ?>"></script>
+<script src="<?= asset_url('assets/js/utils/jalali_picker.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/file.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/http.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/lang.js') ?>"></script>

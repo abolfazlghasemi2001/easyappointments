@@ -40,6 +40,7 @@ class Availability
         $this->CI->load->model('settings_model');
         $this->CI->load->model('unavailabilities_model');
         $this->CI->load->model('blocked_periods_model');
+        $this->CI->load->model('holidays_model');
         $this->CI->load->model('working_plan_exceptions_model');
 
         $this->CI->load->library('ics_file');
@@ -64,6 +65,11 @@ class Availability
         ?int $exclude_appointment_id = null,
     ): array {
         if ($this->CI->blocked_periods_model->is_entire_date_blocked($date)) {
+            return [];
+        }
+
+        if ($this->CI->holidays_model->is_holiday($date)) {
+            // Holidays (national, religious, or custom business closures) are not bookable.
             return [];
         }
 
