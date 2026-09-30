@@ -49,6 +49,9 @@ touched when there is no other extension point, and each such change is listed b
 | 13 | `assets/js/utils/calendar_default_view.js` | Week starts on `App.Utils.Jalali.firstDayOfWeek()` (4 lines) | Saturday-first week | 2 |
 | 14 | `assets/js/utils/calendar_table_view.js` | Same as #13 (2 lines) | Saturday-first week | 2 |
 | 15 | `gulpfile.js`, `package.json`, `babel.config.json` | Added the `styles:rtl` task (postcss-rtlcss), the `vazirmatn` font copy, the Persian FullCalendar locale copy and replaced the abandoned `babel-preset-minify` with `gulp-terser` | Build pipeline: a single SCSS source produces both LTR and RTL stylesheets | 2 |
+| 16 | `application/controllers/Booking.php` | `register()` stores the appointment through the new `booking_service` (4 lines + `FORK:` comment) | **Explicitly requested** (step 5): the public booking path never called `has_provider_conflict()`, so two simultaneous requests could both create an appointment for the same slot. There is no hook or model extension point inside the controller | 5 |
+| 17 | `application/config/autoload.php` | Added the `'phone'` helper to `$autoload['helper']` (1 line + `FORK:` comment) | Iranian phone normalization/validation is needed by the booking flow, the waitlist model and (later) the OTP service | 5 |
+| 18 | `application/libraries/Availability.php` | Ignore appointments that do not block their slot anymore (cancelled or expired hold) in `get_available_periods()` (a library of its own class, 8 lines + `FORK:` comment) | Without it a released slot is still reported as busy, so the hours offered to the customer would differ from the hours that can be booked | 5 |
 
 ### Additive files (no upstream file was modified)
 
@@ -62,6 +65,12 @@ Application code: `application/libraries/Jalali_date.php`, `application/helpers/
 Frontend: `assets/css/persian.scss`, `assets/js/utils/jalali_date.js`,
 `assets/js/utils/jalali_picker.js`, `assets/js/http/holidays_http_client.js`,
 `assets/js/pages/holidays.js`.
+
+Step 5: `application/libraries/Booking_service.php`, `application/libraries/Appointment_status.php`,
+`application/controllers/Booking_maintenance.php`, `application/helpers/phone_helper.php`,
+`application/models/Waitlist_model.php`, `application/migrations/072_add_booking_integrity.php`,
+`application/migrations/073_create_waitlist_table.php`, `tests/Unit/Booking/*` (three files),
+`tests/Unit/Helper/PhoneHelperTest.php`, `docs/fa/step-05-booking.md`.
 
 Tooling/tests/docs: `dev/sandbox/*` (six files), `dev/sandbox/sqlite-dev-db.sh`,
 `tests/Unit/Localization/*` (two files), `tests/Unit/Holidays/HolidaysModelTest.php`,
