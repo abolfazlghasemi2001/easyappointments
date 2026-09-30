@@ -67,6 +67,8 @@
     "start": "npx --yes gulp",
     "build": "npx gulp build",
     "docs": "npx gulp docs",
-    "test:js": "node tests/js/jalali_picker.test.mjs"
+    "test:js": "node tests/js/jalali_picker.test.mjs",
+    "test:config": "node tests/nginx/blocking.test.mjs",
+    "test": "npm run test:js && npm run test:config"
   }
 }
