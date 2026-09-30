@@ -1,0 +1,38 @@
+/* ----------------------------------------------------------------------------
+ * Easy!Appointments - Online Appointment Scheduler
+ *
+ * Customer portal styles.
+ *
+ * @package     EasyAppointments
+ * @license     https://opensource.org/licenses/GPL-3.0 - GPLv3
+ * ---------------------------------------------------------------------------- */
+
+.customer-portal {
+    #customer-portal-login {
+        max-width: 420px;
+        margin: 0 auto;
+    }
+
+    .customer-portal-appointment-datetime {
+        font-variant-numeric: tabular-nums;
+    }
+
+    #customer-portal-upcoming .list-group-item,
+    #customer-portal-past .list-group-item {
+        border-inline-start: 3px solid var(--bs-primary);
+    }
+
+    #customer-portal-past .list-group-item {
+        border-inline-start-color: var(--bs-secondary);
+        opacity: 0.75;
+    }
+
+    #customer-portal-code {
+        letter-spacing: 0.5em;
+        font-size: 1.5rem;
+    }
+
+    #customer-portal-current-phone {
+        font-variant-numeric: tabular-nums;
+    }
+}
