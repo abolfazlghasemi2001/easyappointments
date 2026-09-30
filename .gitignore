@@ -42,3 +42,7 @@
 # Environment configuration (secrets only live on the server, never in the repository)
 .env
 !.env.example
+
+# Temporary files of scripts/demo-prod-stack.sh (see the script)
+.env.demo-backup-*
+config.php.demo-backup-*

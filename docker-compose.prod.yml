@@ -1,0 +1,106 @@
+# ---------------------------------------------------------------------------
+# Production stack of the Easy!Appointments fork (nobat.hoosna1402.ir).
+#
+# Three services only:
+#
+#   db  - MySQL 8, no port published on the host, data in the named volume
+#   app - php-fpm with the production image (docker/php-fpm/Dockerfile.prod)
+#   web - nginx, published on 127.0.0.1:${APP_HTTP_PORT} (loopback only)
+#
+# The internet facing TLS termination is a separate, optional overlay:
+#
+#   docker compose -f docker-compose.prod.yml -f docker-compose.caddy.yml up -d
+#
+# The file format is 2.4 on purpose: the server runs docker-compose 1.29.2
+# (the legacy binary) and its Compose implementation understands 2.x/3.x but
+# not the newer top level keys of the Compose Specification.
+#
+# Every credential is read from the ".env" file next to this file. The values
+# are never committed (see .env.example and .gitignore).
+#
+# Fork addition - not part of the upstream project (see CUSTOMIZATIONS.md).
+# ---------------------------------------------------------------------------
+version: "2.4"
+
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    command: --default-time-zone=+03:30
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD must be set in .env}
+      MYSQL_DATABASE: ${DB_NAME:-easyappointments}
+      MYSQL_USER: ${DB_USERNAME:-easyappointments}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set in .env}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./deploy/mysql/prod.cnf:/etc/mysql/conf.d/prod.cnf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping --silent -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\""]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    mem_limit: 768m
+    networks:
+      - internal
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/php-fpm/Dockerfile.prod
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    working_dir: /var/www/html
+    environment:
+      # The application reads the same variables from .env, these two make the
+      # container understand its environment even before config-loader runs.
+      APP_ENV: ${APP_ENV:-production}
+      TZ: Asia/Tehran
+    volumes:
+      # The repository is the deployment artifact: git pull + composer install
+      # + gulp compile update the running application without a rebuild.
+      - ${APP_PATH:-.}:/var/www/html
+      - ./docker/php-fpm/php-prod.ini:/usr/local/etc/php/conf.d/99-prod.ini:ro
+      - ./docker/php-fpm/php-fpm-prod.conf:/usr/local/etc/php-fpm.d/zz-prod.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "php-fpm -t >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    mem_limit: 512m
+    networks:
+      - internal
+
+  web:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      # Loopback only: Caddy (docker-compose.caddy.yml) is the only component
+      # that may be reached from the internet.
+      - '127.0.0.1:${APP_HTTP_PORT:-8080}:80'
+    volumes:
+      - ${APP_PATH:-.}:/var/www/html:ro
+      - ./deploy/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/index.php/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    mem_limit: 64m
+    networks:
+      - internal
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  internal:
+    driver: bridge

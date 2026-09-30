@@ -8,10 +8,13 @@
  *   npm install --no-save @php-wasm/node@3.1.56 @php-wasm/node-8-4@3.1.56
  *
  * Usage: node dev/sandbox/server.mjs [port]     (default port: 8080)
+ *
+ * The server refuses the paths that the production web server refuses as well (see dev/sandbox/blocked-paths.mjs).
  */
 import { PHP, PHPRequestHandler } from '@php-wasm/universal';
 import { loadNodeRuntime, createNodeFsMountHandler } from '@php-wasm/node';
 import http from 'node:http';
+import { isBlockedPath } from './blocked-paths.mjs';
 
 const REPO = process.env.EA_ROOT || process.cwd();
 const PORT = Number(process.argv[2] || process.env.PORT || 8080);
@@ -32,6 +35,16 @@ const handler = new PHPRequestHandler({
 });
 
 const server = http.createServer(async (request, response) => {
+    // The development server applies the same "never served" rules as the production nginx configuration
+    // (deploy/nginx/default.conf), so that a file that is public here is public in production too.
+    const pathname = (request.url || '/').split('?')[0];
+
+    if (isBlockedPath(pathname)) {
+        response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
+        response.end('Not Found');
+        return;
+    }
+
     const chunks = [];
 
     for await (const chunk of request) {
