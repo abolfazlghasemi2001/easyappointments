@@ -1015,7 +1015,7 @@ App.Utils.CalendarDefaultView = (function () {
             Object.assign(workingPlanExceptions, rawExceptions);
         }
 
-        const firstWeekdayNumber = App.Utils.Date.getWeekdayId(vars('first_weekday'));
+        const firstWeekdayNumber = App.Utils.Jalali.firstDayOfWeek();
         const sortedWorkingPlan = App.Utils.Date.sortWeekDictionary(workingPlan, firstWeekdayNumber);
         const calendarDate = moment(fullCalendar.view.currentStart).clone();
         const viewEnd = fullCalendar.view.currentEnd;
@@ -1303,7 +1303,7 @@ App.Utils.CalendarDefaultView = (function () {
     function initialize() {
         const {columnFormat, timeFormat, slotTimeFormat} = getFormatSettings();
         const initialView = window.innerWidth < 468 ? 'timeGridDay' : 'timeGridWeek';
-        const firstWeekdayNumber = App.Utils.Date.getWeekdayId(vars('first_weekday'));
+        const firstWeekdayNumber = App.Utils.Jalali.firstDayOfWeek();
 
         // Create FullCalendar instance
         fullCalendar = new FullCalendar.Calendar($calendar[0], {

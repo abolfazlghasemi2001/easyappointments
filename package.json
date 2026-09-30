@@ -37,13 +37,13 @@
     "moment-timezone": "^0.6.0",
     "select2": "^4.1.0-rc.0",
     "tippy.js": "^6.3.7",
-    "trumbowyg": "^2.31.0"
+    "trumbowyg": "^2.31.0",
+    "vazirmatn": "^33.0.3"
   },
   "devDependencies": {
     "@babel/core": "^8.0.1",
     "@babel/preset-env": "^8.0.2",
     "@prettier/plugin-php": "^0.24.0",
-    "babel-preset-minify": "^0.5.2",
     "del": "^8.0.1",
     "fs-extra": "^11.3.2",
     "gulp": "^5.0.1",
@@ -53,8 +53,11 @@
     "gulp-clean-css": "^4.3.0",
     "gulp-debug": "^4.0.0",
     "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^10.0.0",
     "gulp-rename": "^2.1.0",
     "gulp-sass": "^6.0.1",
+    "gulp-terser": "^2.1.0",
+    "postcss-rtlcss": "^6.0.0",
     "prettier": "^3.6.2",
     "sass": "^1.93.2",
     "zip-dir": "^2.0.0"

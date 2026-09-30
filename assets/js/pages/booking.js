@@ -53,6 +53,20 @@ App.Pages.Booking = (function () {
     let manageMode = vars('manage_mode') || false;
 
     /**
+     * Get the first day of the month that is currently displayed by the date picker.
+     *
+     * This method works with both the default (Gregorian) flatpickr calendar and the Jalali calendar, which keeps its
+     * own view state (see App.Utils.UI.getDisplayedMonth()).
+     *
+     * @param {Object} instance flatpickr instance.
+     *
+     * @return {Object} Returns the moment object of the displayed month.
+     */
+    function getDisplayedMonthMoment(instance) {
+        return moment(App.Utils.UI.getDisplayedMonth(instance));
+    }
+
+    /**
      * Detect the month step.
      *
      * @param previousDateTimeMoment
@@ -125,12 +139,7 @@ App.Pages.Booking = (function () {
                 monthTimeout = setTimeout(() => {
                     const previousMoment = moment(instance.selectedDates[0]);
 
-                    const displayedMonthMoment = moment(
-                        instance.currentYearElement.value +
-                            '-' +
-                            String(Number(instance.monthsDropdownContainer.value) + 1).padStart(2, '0') +
-                            '-01',
-                    );
+                    const displayedMonthMoment = getDisplayedMonthMoment(instance);
 
                     const monthChangeStep = detectDatepickerMonthChangeStep(previousMoment, displayedMonthMoment);
 
@@ -147,12 +156,7 @@ App.Pages.Booking = (function () {
                 setTimeout(() => {
                     const previousMoment = moment(instance.selectedDates[0]);
 
-                    const displayedMonthMoment = moment(
-                        instance.currentYearElement.value +
-                            '-' +
-                            String(Number(instance.monthsDropdownContainer.value) + 1).padStart(2, '0') +
-                            '-01',
-                    );
+                    const displayedMonthMoment = getDisplayedMonthMoment(instance);
 
                     const monthChangeStep = detectDatepickerMonthChangeStep(previousMoment, displayedMonthMoment);
 

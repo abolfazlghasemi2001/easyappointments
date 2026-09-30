@@ -33,18 +33,22 @@ window.App.Utils.Date = (function () {
         }
 
         let dateFormat;
+        let jalaliFormat;
 
         switch (dateFormatType) {
             case 'DMY':
                 dateFormat = 'DD/MM/YYYY';
+                jalaliFormat = 'DD/MM/YYYY';
                 break;
 
             case 'MDY':
                 dateFormat = 'MM/DD/YYYY';
+                jalaliFormat = 'MM/DD/YYYY';
                 break;
 
             case 'YMD':
                 dateFormat = 'YYYY/MM/DD';
+                jalaliFormat = 'YYYY/MM/DD';
                 break;
 
             default:
@@ -62,6 +66,24 @@ window.App.Utils.Date = (function () {
                 break;
             default:
                 throw new Error(`Invalid time format type provided: ${timeFormatType}`);
+        }
+
+        // The Jalali calendar is used for the displayed values only, the date objects that are exchanged with the
+        // backend remain Gregorian.
+        if (window.App.Utils.Jalali && App.Utils.Jalali.enabled()) {
+            const persianDigits = App.Utils.Jalali.persianDigitsEnabled();
+
+            const jalaliDate = App.Utils.Jalali.format(dateMoment.toDate(), jalaliFormat, false);
+
+            if (!withHours) {
+                return persianDigits ? App.Utils.Jalali.toPersianDigits(jalaliDate) : jalaliDate;
+            }
+
+            const time = dateMoment.format(timeFormat);
+
+            const value = `${jalaliDate} ${time}`;
+
+            return persianDigits ? App.Utils.Jalali.toPersianDigits(value) : value;
         }
 
         const format = withHours ? `${dateFormat} ${timeFormat}` : dateFormat;

@@ -22,6 +22,9 @@ const rename = require('gulp-rename');
 const sass = require('gulp-sass')(require('sass'));
 const zip = require('zip-dir');
 const debug = require('gulp-debug');
+const postcss = require('gulp-postcss');
+const terser = require('gulp-terser');
+const rtlcss = require('postcss-rtlcss');
 
 function archive(done) {
     const filename = 'easyappointments-0.0.0.zip';
@@ -66,8 +69,8 @@ function archive(done) {
     );
 
     fs.removeSync('build/composer.lock');
-    del.sync('**/.DS_Store');
-    del.sync('build/**/.git');
+    del.deleteSync('**/.DS_Store');
+    del.deleteSync('build/**/.git');
 
     zip('build', {saveTo: filename}, function (error) {
         if (error) {
@@ -81,6 +84,7 @@ function archive(done) {
 function clean(done) {
     fs.removeSync('assets/js/**/*.min.js');
     fs.removeSync('assets/css/**/*.min.css');
+    fs.removeSync('assets/css/**/*.rtl.css');
     done();
 }
 
@@ -90,6 +94,7 @@ function scripts() {
         .pipe(plumber())
         .pipe(changed('assets/js/**/*'))
         .pipe(babel({comments: false}))
+        .pipe(terser())
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest('assets/js'));
 }
@@ -112,19 +117,35 @@ function styles() {
         .pipe(gulp.dest('assets/css'));
 }
 
+function stylesRtl() {
+    // The right-to-left stylesheets are generated from the compiled (left-to-right) stylesheets, so that both
+    // directions always share the same source of truth. The Persian typography rules of "persian.css" are not
+    // duplicated into the theme variants.
+    return gulp
+        .src(['assets/css/**/*.css', '!assets/css/**/*.min.css', '!assets/css/**/*.rtl.css'])
+        .pipe(plumber())
+        .pipe(postcss([rtlcss()]))
+        .pipe(rename({suffix: '.rtl'}))
+        .pipe(gulp.dest('assets/css'))
+        .pipe(css())
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest('assets/css'));
+}
+
 function watch(done) {
     gulp.watch(['assets/js/**/*.js', '!assets/js/**/*.min.js'], gulp.parallel(scripts));
-    gulp.watch(['assets/css/**/*.scss', '!assets/css/**/*.css'], gulp.parallel(styles));
+    gulp.watch(['assets/css/**/*.scss', '!assets/css/**/*.css'], gulp.parallel(styles, stylesRtl));
     done();
 }
 
 function vendor(done) {
-    del.sync(['assets/vendor/**', '!assets/vendor/index.html']);
+    del.deleteSync(['assets/vendor/**', '!assets/vendor/index.html']);
 
     // bootstrap
     gulp.src([
         'node_modules/bootstrap/dist/js/bootstrap.min.js',
         'node_modules/bootstrap/dist/css/bootstrap.min.css',
+        'node_modules/bootstrap/dist/css/bootstrap.rtl.min.css',
     ]).pipe(gulp.dest('assets/vendor/bootstrap'));
 
     // @fortawesome-fontawesome-free
@@ -141,6 +162,11 @@ function vendor(done) {
 
     // fullcalendar
     gulp.src(['node_modules/fullcalendar/index.global.min.js']).pipe(gulp.dest('assets/vendor/fullcalendar'));
+
+    // fullcalendar-locales (the Persian locale provides the Jalali dates through the "fa-IR" Intl formatting)
+    gulp.src(['node_modules/@fullcalendar/core/locales/fa.global.min.js']).pipe(
+        gulp.dest('assets/vendor/fullcalendar/locales'),
+    );
 
     // fullcalendar-moment
     gulp.src(['node_modules/@fullcalendar/moment/index.global.min.js']).pipe(
@@ -191,6 +217,9 @@ function vendor(done) {
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest('assets/vendor/flatpickr'));
 
+    // vazirmatn (Persian font)
+    gulp.src(['node_modules/vazirmatn/fonts/webfonts/*.woff2']).pipe(gulp.dest('assets/vendor/vazirmatn/webfonts'));
+
     done();
 }
 
@@ -198,7 +227,8 @@ exports.clean = gulp.series(clean);
 exports.vendor = gulp.series(vendor);
 exports.scripts = gulp.series(scripts);
 exports.styles = gulp.series(styles);
-exports.compile = gulp.series(clean, vendor, scripts, styles);
-exports.dev = gulp.series(clean, vendor, scripts, styles, watch);
-exports.build = gulp.series(clean, vendor, scripts, styles, archive);
+exports['styles:rtl'] = gulp.series(stylesRtl);
+exports.compile = gulp.series(clean, vendor, scripts, styles, stylesRtl);
+exports.dev = gulp.series(clean, vendor, scripts, styles, stylesRtl, watch);
+exports.build = gulp.series(clean, vendor, scripts, styles, stylesRtl, archive);
 exports.default = exports.dev;

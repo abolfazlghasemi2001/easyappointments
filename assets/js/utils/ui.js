@@ -55,9 +55,9 @@ window.App.Utils.UI = (function () {
      * @return Object
      */
     function getFlatpickrLocale() {
-        const firstWeekDay = vars('first_weekday');
+        const firstWeekDayNumber = App.Utils.Jalali.firstDayOfWeek();
 
-        const firstWeekDayNumber = App.Utils.Date.getWeekdayId(firstWeekDay);
+        const jalaliEnabled = App.Utils.Jalali.enabled();
 
         return {
             weekdays: {
@@ -80,36 +80,41 @@ window.App.Utils.UI = (function () {
                     lang('saturday'),
                 ],
             },
-            months: {
-                shorthand: [
-                    lang('january_short'),
-                    lang('february_short'),
-                    lang('march_short'),
-                    lang('april_short'),
-                    lang('may_short'),
-                    lang('june_short'),
-                    lang('july_short'),
-                    lang('august_short'),
-                    lang('september_short'),
-                    lang('october_short'),
-                    lang('november_short'),
-                    lang('december_short'),
-                ],
-                longhand: [
-                    lang('january'),
-                    lang('february'),
-                    lang('march'),
-                    lang('april'),
-                    lang('may'),
-                    lang('june'),
-                    lang('july'),
-                    lang('august'),
-                    lang('september'),
-                    lang('october'),
-                    lang('november'),
-                    lang('december'),
-                ],
-            },
+            months: jalaliEnabled
+                ? {
+                      shorthand: App.Utils.Jalali.MONTH_NAMES.map((name) => name.slice(0, 5)),
+                      longhand: App.Utils.Jalali.MONTH_NAMES,
+                  }
+                : {
+                      shorthand: [
+                          lang('january_short'),
+                          lang('february_short'),
+                          lang('march_short'),
+                          lang('april_short'),
+                          lang('may_short'),
+                          lang('june_short'),
+                          lang('july_short'),
+                          lang('august_short'),
+                          lang('september_short'),
+                          lang('october_short'),
+                          lang('november_short'),
+                          lang('december_short'),
+                      ],
+                      longhand: [
+                          lang('january'),
+                          lang('february'),
+                          lang('march'),
+                          lang('april'),
+                          lang('may'),
+                          lang('june'),
+                          lang('july'),
+                          lang('august'),
+                          lang('september'),
+                          lang('october'),
+                          lang('november'),
+                          lang('december'),
+                      ],
+                  },
             daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
             firstDayOfWeek: firstWeekDayNumber,
             ordinal: function (nth) {
@@ -136,8 +141,39 @@ window.App.Utils.UI = (function () {
             monthAriaLabel: lang('month'),
             hourAriaLabel: lang('hour'),
             minuteAriaLabel: lang('minute'),
-            time_24hr: false,
+            time_24hr: vars('time_format') === 'military',
         };
+    }
+
+    /**
+     * Check whether the Jalali date picker must replace the default flatpickr calendar.
+     *
+     * @return {Boolean}
+     */
+    function isJalaliPickerEnabled() {
+        return Boolean(
+            window.App.Utils.Jalali && App.Utils.Jalali.enabled() && window.App.Utils.JalaliPicker && App.Utils.JalaliPicker,
+        );
+    }
+
+    /**
+     * Initialize a flatpickr instance, using the Jalali calendar when it is enabled for the installation.
+     *
+     * @param {jQuery} $target
+     * @param {Object} options flatpickr options.
+     *
+     * @return {Object} Returns the flatpickr instance.
+     */
+    function initializeFlatpickr($target, options) {
+        if (!$target?.length) {
+            throw new Error('Empty $target argument provided.');
+        }
+
+        if (isJalaliPickerEnabled()) {
+            return App.Utils.JalaliPicker.initialize($target, options);
+        }
+
+        return $target.flatpickr(options);
     }
 
     /**
@@ -149,7 +185,7 @@ window.App.Utils.UI = (function () {
      * @param {Object} [params]
      */
     function initializeDateTimePicker($target, params = {}) {
-        $target.flatpickr({
+        initializeFlatpickr($target, {
             enableTime: true,
             allowInput: true,
             static: true,
@@ -169,7 +205,7 @@ window.App.Utils.UI = (function () {
      * @param {Object} [params]
      */
     function initializeDatePicker($target, params = {}) {
-        $target.flatpickr({
+        initializeFlatpickr($target, {
             allowInput: true,
             dateFormat: getDateFormat(),
             locale: getFlatpickrLocale(),
@@ -197,6 +233,32 @@ window.App.Utils.UI = (function () {
             static: true,
             ...params,
         });
+    }
+
+    /**
+     * Get the first day of the month that is currently displayed by a date-picker instance.
+     *
+     * The default flatpickr implementation reads the Gregorian month/year dropdowns of the calendar, while the Jalali
+     * picker keeps its own view state. This method supports both cases.
+     *
+     * @param {Object} instance flatpickr instance.
+     *
+     * @return {Date} Returns the first day of the displayed month.
+     */
+    function getDisplayedMonth(instance) {
+        if (isJalaliPickerEnabled()) {
+            const displayedMonth = App.Utils.JalaliPicker.getDisplayedMonth(instance);
+
+            if (displayedMonth) {
+                return displayedMonth;
+            }
+        }
+
+        const year = instance.currentYearElement.value;
+
+        const month = String(Number(instance.monthsDropdownContainer.value) + 1).padStart(2, '0');
+
+        return new Date(Number(year), Number(month) - 1, 1);
     }
 
     /**
@@ -260,5 +322,7 @@ window.App.Utils.UI = (function () {
         initializeTextEditor,
         getDateTimePickerValue,
         setDateTimePickerValue,
+        getDisplayedMonth,
+        isJalaliPickerEnabled,
     };
 })();

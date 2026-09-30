@@ -1,0 +1,164 @@
+/* ----------------------------------------------------------------------------
+ * Easy!Appointments - Online Appointment Scheduler
+ *
+ * Persian (RTL) typography and layout adjustments.
+ *
+ * The stylesheet loads the Vazirmatn font (SIL Open Font License) and applies the Persian typography rules when the
+ * application is rendered from right to left. The directional (left/right) rules of the interface are generated into
+ * the "*.rtl.css" stylesheets during the build (see the "styles:rtl" gulp task), so this file only contains the
+ * typography and the value tweaks that are specific to the Persian language.
+ *
+ * @package     EasyAppointments
+ * @license     https://opensource.org/licenses/GPL-3.0 - GPLv3
+ * @link        https://easyappointments.org
+ * ---------------------------------------------------------------------------- */
+
+/* FONT FAMILY
+   ------------------------------------------------------------------------- */
+
+@font-face {
+    font-family: 'Vazirmatn';
+    src: url('../vendor/vazirmatn/webfonts/Vazirmatn[wght].woff2') format('woff2 supports variations'),
+        url('../vendor/vazirmatn/webfonts/Vazirmatn[wght].woff2') format('woff2-variations');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Fallback declarations for the browsers that do not support the variable font syntax. */
+@font-face {
+    font-family: 'Vazirmatn Static';
+    src: url('../vendor/vazirmatn/webfonts/Vazirmatn-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazirmatn Static';
+    src: url('../vendor/vazirmatn/webfonts/Vazirmatn-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazirmatn Static';
+    src: url('../vendor/vazirmatn/webfonts/Vazirmatn-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* TYPOGRAPHY
+   ------------------------------------------------------------------------- */
+
+html[dir='rtl'] {
+    --bs-body-font-family: 'Vazirmatn', 'Vazirmatn Static', 'Segoe UI', Tahoma, Arial, sans-serif;
+
+    body,
+    input,
+    button,
+    select,
+    textarea,
+    optgroup,
+    .btn,
+    .form-control,
+    .form-select,
+    .dropdown-menu,
+    .modal-content,
+    .popover,
+    .tooltip,
+    .flatpickr-calendar {
+        font-family: var(--bs-body-font-family);
+    }
+
+    body {
+        font-size: 1rem;
+        line-height: 1.8;
+        letter-spacing: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .h1,
+    .h2,
+    .h3,
+    .h4,
+    .h5,
+    .h6 {
+        line-height: 1.6;
+    }
+
+    /* Latin values (URLs, e-mail addresses, phone numbers, times) must keep their natural direction, even when they
+       appear inside a right-to-left sentence. */
+    .text-monospace,
+    code,
+    kbd,
+    pre,
+    samp,
+    [dir='ltr'],
+    .force-ltr,
+    input[type='email'],
+    input[type='tel'],
+    input[type='url'],
+    input[type='number'],
+    input[type='password'] {
+        direction: ltr;
+        text-align: left;
+        unicode-bidi: plaintext;
+    }
+
+    .form-control::placeholder {
+        direction: inherit;
+    }
+
+    /* Digits of the date pickers and the tables remain readable when copied to other applications. */
+    .flatpickr-calendar,
+    .ea-jalali-wrapper {
+        direction: rtl;
+    }
+}
+
+/* LAYOUT TWEAKS
+   ------------------------------------------------------------------------- */
+
+html[dir='rtl'] {
+    /* The booking wizard steps and the backend menus use absolute positioning that is not mirrored by the generated
+       RTL stylesheets (because the values are set with the "!important" flag in the source stylesheets). */
+    #book-appointment-wizard .book-step {
+        margin-right: 0 !important;
+        margin-left: 13px !important;
+    }
+
+    #book-appointment-wizard .book-step.active-step {
+        margin-left: 0 !important;
+    }
+
+    .navbar-nav .dropdown-menu {
+        text-align: right;
+    }
+
+    .table > :not(caption) > * > * {
+        text-align: right;
+    }
+
+    /* The working plan tables use the first column as a row header. */
+    .working-plan table td,
+    .working-plan table th {
+        text-align: right;
+    }
+
+    /* Keep the language selector layout intact. */
+    #language-list {
+        padding-right: 0;
+    }
+
+    .nav-link {
+        padding-inline-start: 0;
+    }
+}

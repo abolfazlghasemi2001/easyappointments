@@ -28,6 +28,12 @@
     </li>
 
     <li class="nav-item mb-3">
+        <a class="nav-link px-0 py-2" href="<?= site_url('holidays') ?>">
+            <?= lang('holidays') ?>
+        </a>
+    </li>
+
+    <li class="nav-item mb-3">
         <a class="nav-link px-0 py-2" href="<?= site_url('integrations') ?>">
             <?= lang('integrations') ?>
         </a>

@@ -34,3 +34,7 @@
 
 # Local dev/test database (sqlite)
 /storage/*.sqlite
+
+# Sandbox development tooling (php-wasm runtime)
+/dev/sandbox/node_modules/
+/dev/sandbox/package-lock.json

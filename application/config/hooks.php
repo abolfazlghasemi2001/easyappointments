@@ -23,6 +23,18 @@ $hook['post_controller_constructor'][] = [
 ];
 
 /**
+ * Expose the Persian (Jalali) localization settings to the frontend (calendar type, Persian digits, text direction,
+ * first day of the week).
+ */
+$hook['post_controller_constructor'][] = [
+    'class' => '',
+    'function' => 'load_localization_script_vars',
+    'filename' => 'localization.php',
+    'filepath' => 'hooks',
+    'params' => [],
+];
+
+/**
  * Probabilistically clean up old storage files (runs ~1% of requests).
  */
 $hook['post_system'][] = [
