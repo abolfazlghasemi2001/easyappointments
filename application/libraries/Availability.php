@@ -374,6 +374,18 @@ class Availability
             ),
         );
 
+        // FORK: appointments that were cancelled or whose provisional hold expired do not occupy the slot anymore
+        // (see CUSTOMIZATIONS.md #18).
+
+        $this->CI->load->library('appointment_status');
+
+        $appointments = array_values(
+            array_filter(
+                $appointments,
+                fn(array $appointment): bool => !$this->CI->appointment_status->releases_slot($appointment),
+            ),
+        );
+
         // Find the empty spaces on the plan. The first split between the plan is due to a break (if any). After that
         // every reserved appointment is considered to be a taken space in the plan.
         $working_day = strtolower(date('l', strtotime($date)));

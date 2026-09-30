@@ -79,6 +79,7 @@ $autoload['helper'] = [
     'password',
     'path',
     'permission',
+    'phone', // FORK: Iranian phone number normalization/validation (see CUSTOMIZATIONS.md #17).
     'rate_limit',
     'routes',
     'security',
