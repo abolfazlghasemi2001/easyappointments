@@ -6,12 +6,17 @@
  * @var string $legal_notice_url
  * @var string $imprint_url
  */
+
+$language_name = (string) config('language', 'english');
+$is_persian = $language_name === 'persian';
+$language_label = $is_persian ? lang('persian_language_name') : ucfirst($language_name);
+$powered_by_label = $is_persian ? lang('powered_by') : 'Powered by';
 ?>
 
 <div id="frame-footer" class="p-3 text-center border-top">
     <small class="d-block d-md-flex">
         <span class="footer-powered-by small d-block w-100 w-md-50 text-center text-md-start p-1 pe-md-0">
-            Powered By
+            <?= e($powered_by_label) ?>
             <a href="https://easyappointments.org" target="_blank">Easy!Appointments</a>
 
             <?php if (!empty($legal_notice_url)): ?>
@@ -28,7 +33,7 @@
         <span class="footer-options d-block w-100 w-md-50 text-center text-md-end">
             <span id="select-language" class="badge bg-secondary d-inline-block my-1 my-md-0 p-1" style="min-width: 100px;">
                 <i class="fas fa-language me-2"></i>
-                <?= ucfirst(config('language')) ?>
+                <?= e($language_label) ?>
             </span>
     
             <?php if ($display_login_button): ?>

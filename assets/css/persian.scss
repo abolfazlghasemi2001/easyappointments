@@ -44,6 +44,14 @@
 
 @font-face {
     font-family: 'Vazirmatn Static';
+    src: url('../vendor/vazirmatn/webfonts/Vazirmatn-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazirmatn Static';
     src: url('../vendor/vazirmatn/webfonts/Vazirmatn-Bold.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
@@ -55,6 +63,8 @@
 
 html[dir='rtl'] {
     --bs-body-font-family: 'Vazirmatn', 'Vazirmatn Static', 'Segoe UI', Tahoma, Arial, sans-serif;
+    font-feature-settings: 'ss01', 'ss02';
+    text-rendering: optimizeLegibility;
 
     body,
     input,

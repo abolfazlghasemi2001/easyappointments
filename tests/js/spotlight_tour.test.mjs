@@ -24,6 +24,16 @@ function setupDom() {
         pretendToBeVisual: true,
         url: 'https://example.test/booking',
     });
+    dom.window.lang = (key) => ({
+        spotlight_later: 'بعداً',
+        spotlight_skip: 'رد کردن راهنما',
+        spotlight_back: 'قبلی',
+        spotlight_next: 'بعدی',
+        spotlight_finish: 'پایان',
+        spotlight_close: 'بستن راهنما',
+        spotlight_progress: 'مرحله',
+        spotlight_of: 'از',
+    }[key] || key);
     dom.window.eval(source);
     return dom;
 }
@@ -43,12 +53,20 @@ const tour = new window.SpotlightTour({
 
 assert('tour opens and renders an accessible dialog when the selector is unavailable', tour.start());
 const dialog = window.document.querySelector('[role="dialog"][aria-modal="true"]');
+const portal = window.document.getElementById('ea-tour-root');
+assert('tour portal is mounted directly in the body at the maximum stacking level', portal?.parentElement === window.document.body && portal.style.zIndex === '2147483647');
+assert('tooltip controls live inside the top-level portal', dialog?.parentElement === portal && dialog.querySelector('[data-tour-skip]')?.textContent === 'رد کردن راهنما');
 assert('dialog announces the first title and explanation', dialog?.getAttribute('aria-labelledby') === 'ea-tour-title' && dialog?.getAttribute('aria-describedby') === 'ea-tour-description');
-assert('step progress is visible and accurate', window.document.querySelector('[data-tour-progress-text]')?.textContent === 'مرحله 1 از 2');
+assert('step progress is visible and accurate with Persian digits', window.document.querySelector('[data-tour-progress-text]')?.textContent === 'مرحله ۱ از ۲');
 
 window.document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
 assert('RTL ArrowLeft advances the guide', window.document.getElementById('ea-tour-title')?.textContent === 'مرحلهٔ دوم');
-assert('progress updates after moving forward', window.document.querySelector('[data-tour-progress-text]')?.textContent === 'مرحله 2 از 2');
+assert('progress updates after moving forward', window.document.querySelector('[data-tour-progress-text]')?.textContent === 'مرحله ۲ از ۲');
+const backButton = window.document.querySelector('.ea-tour-tooltip__back');
+assert('Previous becomes available on later steps', backButton?.hidden === false && backButton.textContent === 'قبلی');
+backButton?.click();
+assert('Previous button returns to the prior step', window.document.getElementById('ea-tour-title')?.textContent === 'مرحلهٔ اول');
+tour.next();
 
 window.document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
 assert('Escape pauses and closes without marking the tour complete', !window.document.getElementById('ea-tour-root') && !JSON.parse(window.localStorage.getItem('tour-completed') || '{}')['unit-tour']);

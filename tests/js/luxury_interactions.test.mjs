@@ -78,7 +78,7 @@ slides.forEach((slide, index) => {
 });
 carouselWindow.eval(carouselSource);
 const dots = Array.from(carousel.querySelectorAll('.ea-carousel__dot'));
-assert('carousel creates one accessible dot for each slide', dots.length === 2 && dots[0].getAttribute('aria-label') === 'رفتن به اسلاید 1 از 2');
+assert('carousel creates one accessible dot for each slide', dots.length === 2 && dots[0].getAttribute('aria-label') === 'رفتن به اسلاید ۱ از ۲');
 assert('first slide is marked current on initialization', dots[0].getAttribute('aria-current') === 'true');
 carousel.querySelector('[data-carousel-next]').click();
 assert('next control scrolls to the next slide and updates current dot', centeredSlide === 1 && dots[1].getAttribute('aria-current') === 'true');

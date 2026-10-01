@@ -45,6 +45,15 @@ App.Pages.Booking = (function () {
 
     const STORAGE_KEY = 'EasyAppointments.CustomerInfo';
 
+    function localizeDisplayDigits(value) {
+        const jalaliDate = App.Utils.JalaliDate;
+        if (typeof jalaliDate?.persianDigitsEnabled === 'function' && jalaliDate.persianDigitsEnabled()) {
+            return jalaliDate.toPersianDigits(value);
+        }
+
+        return String(value);
+    }
+
     /**
      * Determines the functionality of the page.
      *
@@ -83,6 +92,7 @@ App.Pages.Booking = (function () {
      */
     function initialize() {
         if (Boolean(Number(vars('display_cookie_notice'))) && window?.cookieconsent) {
+            const dismissLabel = /^fa(?:-|$)/i.test(document.documentElement.lang || '') ? lang('ok') : 'OK';
             cookieconsent.initialise({
                 palette: {
                     popup: {
@@ -96,7 +106,7 @@ App.Pages.Booking = (function () {
                 },
                 content: {
                     message: lang('website_using_cookies_to_ensure_best_experience'),
-                    dismiss: 'OK',
+                    dismiss: dismissLabel,
                 },
             });
 
@@ -746,7 +756,7 @@ App.Pages.Booking = (function () {
                 </div> 
                 <div class="mb-2">
                     <i class="fas fa-clock me-2"></i>
-                    ${service.duration} ${lang('minutes')}
+                    ${localizeDisplayDigits(service.duration)} ${lang('minutes')}
                 </div>
                 <div class="mb-2">
                     <i class="fas fa-globe me-2"></i>
@@ -754,7 +764,7 @@ App.Pages.Booking = (function () {
                 </div> 
                 <div class="mb-2" ${!Number(service.price) ? 'hidden' : ''}>
                     <i class="fas fa-cash-register me-2"></i>
-                    ${Number(service.price).toFixed(2)} ${service.currency}
+                    ${localizeDisplayDigits(Number(service.price).toFixed(2))} ${service.currency}
                 </div>
             </div>     
         `);
@@ -963,11 +973,11 @@ App.Pages.Booking = (function () {
         const additionalInfoParts = [];
 
         if (service.duration) {
-            additionalInfoParts.push(`${lang('duration')}: ${service.duration} ${lang('minutes')}`);
+            additionalInfoParts.push(`${lang('duration')}: ${localizeDisplayDigits(service.duration)} ${lang('minutes')}`);
         }
 
         if (Number(service.price) > 0) {
-            additionalInfoParts.push(`${lang('price')}: ${Number(service.price).toFixed(2)} ${service.currency}`);
+            additionalInfoParts.push(`${lang('price')}: ${localizeDisplayDigits(Number(service.price).toFixed(2))} ${service.currency}`);
         }
 
         if (service.location) {

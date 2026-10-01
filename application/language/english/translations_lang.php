@@ -595,4 +595,9 @@ $lang['dark_mode'] = 'Dark mode';
 $lang['light_mode'] = 'Light mode';
 $lang['switch_to_light_mode'] = 'Switch to light mode';
 $lang['switch_to_dark_mode'] = 'Switch to dark mode';
+$lang['select_language'] = 'Select Language';
+$lang['persian_language_name'] = 'Persian';
+$lang['powered_by'] = 'Powered by';
+$lang['captcha'] = 'CAPTCHA';
+$lang['ok'] = 'OK';
 // End
