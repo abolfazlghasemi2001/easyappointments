@@ -25,20 +25,26 @@ window.App.Utils.Lang = (function () {
      */
     function enableLanguageSelection($target) {
         // Select Language
+        const isPersian = /^fa(?:-|$)/i.test(document.documentElement.lang || '');
+        const languageTitle = isPersian && typeof window.lang === 'function'
+            ? window.lang('select_language')
+            : (isPersian ? 'انتخاب زبان' : 'Select Language');
         const $languageList = $('<ul/>', {
             'id': 'language-list',
             'html': vars('available_languages').map((availableLanguage) =>
                 $('<li/>', {
                     'class': 'language',
                     'data-language': availableLanguage,
-                    'text': App.Utils.String.upperCaseFirstLetter(availableLanguage),
+                    'text': isPersian && availableLanguage === 'persian'
+                        ? (typeof window.lang === 'function' ? window.lang('persian_language_name') : 'فارسی')
+                        : App.Utils.String.upperCaseFirstLetter(availableLanguage),
                 }),
             ),
         });
 
         $target.popover({
             placement: 'top',
-            title: 'Select Language',
+            title: languageTitle,
             content: $languageList[0],
             html: true,
             container: 'body',

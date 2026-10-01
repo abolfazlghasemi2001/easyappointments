@@ -3,6 +3,19 @@
     'use strict';
 
     const reducedMotion = global.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    const fa = /^fa(?:-|$)/i.test(document.documentElement.lang || '');
+    const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+
+    function formatNumber(value) {
+        const jalaliDate = global.App?.Utils?.JalaliDate;
+        if (typeof jalaliDate?.persianDigitsEnabled === 'function') {
+            return jalaliDate.persianDigitsEnabled()
+                ? jalaliDate.toPersianDigits(value)
+                : String(value);
+        }
+
+        return fa ? String(value).replace(/[0-9]/g, (digit) => persianDigits[Number(digit)]) : String(value);
+    }
 
     function initializeCarousel(root) {
         const track = root.querySelector('[data-carousel-track]');
@@ -32,7 +45,7 @@
                 dot.className = 'ea-carousel__dot';
                 const itemLabel = root.dataset.carouselItemLabel || (document.documentElement.dir === 'rtl' ? 'رفتن به اسلاید' : 'Go to slide');
                 const ofLabel = document.documentElement.dir === 'rtl' ? 'از' : 'of';
-                dot.setAttribute('aria-label', `${itemLabel} ${index + 1} ${ofLabel} ${slides.length}`);
+                dot.setAttribute('aria-label', `${itemLabel} ${formatNumber(index + 1)} ${ofLabel} ${formatNumber(slides.length)}`);
                 dot.setAttribute('aria-current', index === 0 ? 'true' : 'false');
                 dot.addEventListener('click', () => goTo(index));
                 dotsContainer.append(dot);

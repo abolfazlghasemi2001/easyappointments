@@ -14,16 +14,56 @@
     };
 
     const rtl = document.documentElement.dir === 'rtl';
-    const defaults = {
-        later: rtl ? 'بعداً' : 'Later',
-        skip: rtl ? 'رد کردن تور' : 'Skip tour',
-        back: rtl ? 'قبلی' : 'Back',
-        next: rtl ? 'بعدی' : 'Next',
-        finish: rtl ? 'پایان' : 'Finish',
-        close: rtl ? 'بستن راهنما' : 'Close guide',
-        progress: rtl ? 'مرحله' : 'Step',
-        of: rtl ? 'از' : 'of',
-    };
+    const fa = /^fa(?:-|$)/.test((document.documentElement.lang || '').toLowerCase());
+    const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+
+    function formatProgressNumber(value) {
+        const jalaliDate = global.App?.Utils?.JalaliDate;
+        if (typeof jalaliDate?.persianDigitsEnabled === 'function') {
+            return jalaliDate.persianDigitsEnabled()
+                ? jalaliDate.toPersianDigits(value)
+                : String(value);
+        }
+
+        return fa ? String(value).replace(/[0-9]/g, (digit) => persianDigits[Number(digit)]) : String(value);
+    }
+
+    function defaultLabels() {
+        const fallback = rtl
+            ? {
+                  later: 'بعداً',
+                  skip: 'رد کردن راهنما',
+                  back: 'قبلی',
+                  next: 'بعدی',
+                  finish: 'پایان',
+                  close: 'بستن راهنما',
+                  progress: 'مرحله',
+                  of: 'از',
+              }
+            : {
+                  later: 'Later',
+                  skip: 'Skip tour',
+                  back: 'Back',
+                  next: 'Next',
+                  finish: 'Finish',
+                  close: 'Close guide',
+                  progress: 'Step',
+                  of: 'of',
+              };
+
+        if (!fa || typeof global.lang !== 'function') return fallback;
+
+        return {
+            later: global.lang('spotlight_later'),
+            skip: global.lang('spotlight_skip'),
+            back: global.lang('spotlight_back'),
+            next: global.lang('spotlight_next'),
+            finish: global.lang('spotlight_finish'),
+            close: global.lang('spotlight_close'),
+            progress: global.lang('spotlight_progress'),
+            of: global.lang('spotlight_of'),
+        };
+    }
 
     function readMap(key) {
         try {
@@ -58,7 +98,7 @@
             this.allowSkip = options.allowSkip !== false;
             this.keyboardNavigation = options.keyboardNavigation !== false;
             this.persistProgress = options.persistProgress !== false;
-            this.labels = { ...defaults, ...(options.labels || {}) };
+            this.labels = { ...defaultLabels(), ...(options.labels || {}) };
             this.onComplete = options.onComplete || null;
             this.onSkip = options.onSkip || null;
             this.active = false;
@@ -97,6 +137,8 @@
             const root = document.createElement('div');
             root.id = 'ea-tour-root';
             root.className = 'ea-tour-root';
+            // Keep the portal above application stacking contexts even if a page element has an unusually high z-index.
+            root.style.zIndex = '2147483647';
             root.setAttribute('aria-live', 'polite');
             root.setAttribute('aria-atomic', 'true');
 
@@ -245,7 +287,7 @@
             this.description.textContent = step.description || '';
             this.description.hidden = !step.description;
             this.progressText.textContent = this.showProgress
-                ? `${this.labels.progress} ${this.index + 1} ${this.labels.of} ${this.steps.length}`
+                ? `${this.labels.progress} ${formatProgressNumber(this.index + 1)} ${this.labels.of} ${formatProgressNumber(this.steps.length)}`
                 : '';
             this.progressText.parentElement.hidden = !this.showProgress;
             this.progressTrack.hidden = !this.showProgress;

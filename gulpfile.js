@@ -219,6 +219,7 @@ function vendor(done) {
 
     // Self-hosted Persian fonts (SIL Open Font License).
     gulp.src(['node_modules/vazirmatn/fonts/webfonts/*.woff2']).pipe(gulp.dest('assets/vendor/vazirmatn/webfonts'));
+    gulp.src(['node_modules/vazirmatn/OFL.txt']).pipe(gulp.dest('assets/vendor/vazirmatn'));
     gulp.src([
         'node_modules/@fontsource/estedad/files/estedad-arabic-300-normal.woff2',
         'node_modules/@fontsource/estedad/files/estedad-arabic-400-normal.woff2',

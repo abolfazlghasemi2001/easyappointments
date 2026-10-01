@@ -79,6 +79,14 @@
     --ea-radius-sm: 12px;
     --ea-radius-md: 16px;
     --ea-radius-lg: 24px;
+    --ea-text-xs: 12px;
+    --ea-text-sm: 14px;
+    --ea-text-base: 16px;
+    --ea-text-lg: 20px;
+    --ea-text-xl: 25px;
+    --ea-text-2xl: 31px;
+    --ea-text-3xl: 39px;
+    --ea-text-4xl: 49px;
     --ea-space-1: 4px;
     --ea-space-2: 8px;
     --ea-space-4: 16px;
@@ -102,7 +110,7 @@ body.ea-luxury {
     color: var(--ea-ink);
     background: var(--ea-cream);
     font-family: 'Vazirmatn', 'Vazirmatn Static', 'Segoe UI', Tahoma, Arial, sans-serif;
-    font-size: 16px;
+    font-size: var(--ea-text-base);
     line-height: 1.7;
     text-rendering: optimizeLegibility;
 }
@@ -388,8 +396,12 @@ html[dir='rtl'] .barber-hero::before {
 }
 
 .barber-hero__copy {
-    max-width: 600px;
-    padding-block: clamp(72px, 12vw, 148px);
+    max-width: 696px;
+    padding: clamp(36px, 5vw, var(--ea-space-12));
+    border: 1px solid rgba(229, 200, 138, 0.16);
+    border-radius: var(--ea-radius-lg);
+    background: linear-gradient(135deg, rgba(10, 10, 10, 0.38), rgba(10, 10, 10, 0.12));
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.12);
     animation: ea-fade-in-up 650ms var(--ea-ease-out) both;
 }
 
@@ -399,7 +411,7 @@ html[dir='rtl'] .barber-hero::before {
     gap: 10px;
     margin-bottom: 20px;
     color: var(--ea-gold-light);
-    font-size: 0.85rem;
+    font-size: var(--ea-text-sm);
     font-weight: 600;
     letter-spacing: 0.02em;
 }
@@ -415,7 +427,7 @@ html[dir='rtl'] .barber-hero::before {
     max-width: 14ch;
     margin: 0 0 18px;
     color: var(--ea-white) !important;
-    font-size: clamp(2.6rem, 6vw, 5.2rem);
+    font-size: clamp(var(--ea-text-3xl), 5vw, var(--ea-text-4xl));
     font-weight: 600;
     line-height: 1.18;
     text-wrap: balance;
@@ -425,7 +437,7 @@ html[dir='rtl'] .barber-hero::before {
     max-width: 50ch;
     margin: 0 0 30px;
     color: rgba(255, 255, 255, 0.8);
-    font-size: clamp(1rem, 1.4vw, 1.2rem);
+    font-size: clamp(var(--ea-text-base), 1.4vw, var(--ea-text-lg));
     line-height: 1.9;
 }
 
@@ -453,7 +465,7 @@ html[dir='rtl'] .barber-hero::before {
     gap: 12px 28px;
     margin-top: 42px;
     color: rgba(255, 255, 255, 0.76);
-    font-size: 0.9rem;
+    font-size: var(--ea-text-sm);
 }
 
 .barber-hero__meta span {
@@ -482,7 +494,7 @@ html[dir='rtl'] .barber-hero::before {
 }
 
 .showcase-section {
-    padding-block: clamp(56px, 8vw, 100px);
+    padding-block: clamp(48px, 6.25vw, var(--ea-space-20));
     background: var(--ea-cream);
 }
 
@@ -500,20 +512,21 @@ html[dir='rtl'] .barber-hero::before {
 
 .showcase-section__heading h2 {
     margin: 0 0 8px;
-    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-size: clamp(var(--ea-text-xl), 3vw, var(--ea-text-3xl));
 }
 
 .showcase-section__heading p {
     max-width: 52ch;
     margin: 0;
     color: var(--ea-slate);
+    font-size: var(--ea-text-base);
 }
 
 .showcase-section__eyebrow {
     display: block;
     margin-bottom: 10px;
     color: var(--ea-gold-dark);
-    font-size: 0.82rem;
+    font-size: var(--ea-text-sm);
     font-weight: 700;
 }
 
@@ -553,7 +566,7 @@ html[dir='rtl'] .barber-hero::before {
 .provider-showcase-card,
 .promise-card {
     min-height: 300px;
-    padding: 28px;
+    padding: var(--ea-space-8);
     border: 1px solid rgba(26, 26, 26, 0.05);
     border-radius: var(--ea-radius-md);
     background: var(--ea-white);
@@ -563,7 +576,7 @@ html[dir='rtl'] .barber-hero::before {
 
 .service-showcase-card {
     display: flex;
-    min-height: 340px;
+    min-height: 384px;
     flex-direction: column;
     align-items: flex-start;
     text-align: start;
@@ -577,30 +590,45 @@ html[dir='rtl'] .barber-hero::before {
     box-shadow: var(--ea-shadow-card-hover);
 }
 
+.service-showcase-card__action:focus-visible {
+    outline: 3px solid rgba(201, 169, 97, 0.72);
+    outline-offset: 4px;
+}
+
 .service-showcase-card__icon,
 .promise-card__icon {
     display: grid;
-    width: 58px;
-    height: 58px;
-    margin-bottom: auto;
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+    margin-bottom: var(--ea-space-4);
     place-items: center;
     border: 1px solid rgba(201, 169, 97, 0.28);
-    border-radius: 18px;
+    border-radius: 20px;
     color: var(--ea-gold-dark);
     background: rgba(201, 169, 97, 0.1);
 }
 
 .service-showcase-card__icon .ea-icon,
 .promise-card__icon .ea-icon {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
 }
 
-.service-showcase-card h3,
+.service-showcase-card > .showcase-section__eyebrow {
+    margin: 0 0 4px;
+}
+
+.service-showcase-card h3 {
+    margin: 0 0 8px;
+    font-size: var(--ea-text-xl);
+    font-weight: 600;
+}
+
 .provider-showcase-card h3,
 .promise-card h3 {
     margin: 22px 0 8px;
-    font-size: 1.25rem;
+    font-size: var(--ea-text-lg);
 }
 
 .service-showcase-card p,
@@ -608,24 +636,72 @@ html[dir='rtl'] .barber-hero::before {
 .promise-card p {
     margin: 0;
     color: var(--ea-slate);
-    font-size: 0.95rem;
+    font-size: var(--ea-text-base);
+    line-height: 1.75;
 }
 
 .service-showcase-card__facts {
     display: flex;
     width: 100%;
+    align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-top: 22px;
-    padding-top: 16px;
+    margin-top: auto;
+    padding-top: var(--ea-space-4);
     border-top: 1px solid var(--ea-cloud);
     color: var(--ea-slate);
-    font-size: 0.9rem;
+    font-size: var(--ea-text-sm);
+}
+
+.service-showcase-card__duration {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.service-showcase-card__duration .ea-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--ea-gold-dark);
 }
 
 .service-showcase-card__price {
-    color: var(--ea-ink);
+    color: var(--ea-gold-dark);
+    font-size: 18px;
     font-weight: 700;
+    text-align: end;
+}
+
+.service-showcase-card__action {
+    display: inline-flex;
+    width: 100%;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: var(--ea-space-4);
+    padding: 10px 16px;
+    border: 0;
+    border-radius: var(--ea-radius-sm);
+    color: var(--ea-ink);
+    background: var(--ea-gradient-gold);
+    box-shadow: var(--ea-shadow-gold);
+    font-family: inherit;
+    font-size: var(--ea-text-sm);
+    font-weight: 700;
+    cursor: pointer;
+    transition: box-shadow 180ms var(--ea-ease-standard), transform 180ms var(--ea-ease-standard);
+}
+
+.service-showcase-card__action .ea-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.service-showcase-card:hover .service-showcase-card__action {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(201, 169, 97, 0.32);
 }
 
 .provider-showcase-card {
@@ -716,7 +792,7 @@ html[dir='rtl'] .barber-hero::before {
 
 .booking-intro-bar h2 {
     margin: 0 0 4px;
-    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-size: clamp(var(--ea-text-xl), 2.5vw, var(--ea-text-2xl));
 }
 
 .booking-intro-bar p {
@@ -730,9 +806,9 @@ body.ea-booking #wizard-frame-3,
 body.ea-booking #wizard-frame-4 {
     width: min(100% - 40px, 1240px);
     margin: 20px auto 64px;
-    padding: clamp(20px, 4vw, 40px) !important;
+    padding: var(--ea-space-8) !important;
     border: 1px solid rgba(26, 26, 26, 0.06);
-    border-radius: var(--ea-radius-lg);
+    border-radius: var(--ea-radius-md);
     background: var(--ea-white);
     box-shadow: var(--ea-shadow-card);
 }
@@ -746,6 +822,7 @@ body.ea-booking .frame-title {
     margin-bottom: 36px !important;
     color: var(--ea-ink) !important;
     font-family: 'Estedad', 'Vazirmatn', sans-serif;
+    font-size: clamp(var(--ea-text-xl), 3vw, var(--ea-text-2xl));
     font-weight: 600 !important;
 }
 
@@ -1118,7 +1195,7 @@ body.ea-luxury.ea-backend .modal-title {
     }
 
     .barber-hero__copy {
-        padding-block: 88px;
+        padding: 24px;
     }
 
     .barber-hero__meta {
@@ -1134,7 +1211,7 @@ body.ea-luxury.ea-backend .modal-title {
 
     .ea-carousel__track {
         grid-auto-columns: minmax(260px, 86vw);
-        gap: 16px;
+        gap: var(--ea-space-6);
     }
 
     body.ea-booking #wizard-frame-1,
@@ -1143,8 +1220,8 @@ body.ea-luxury.ea-backend .modal-title {
     body.ea-booking #wizard-frame-4 {
         width: calc(100% - 24px);
         margin-block: 14px 36px;
-        padding: 18px !important;
-        border-radius: 18px;
+        padding: var(--ea-space-6) !important;
+        border-radius: var(--ea-radius-md);
     }
 
     body.ea-booking #available-hours {
@@ -1173,7 +1250,7 @@ body.ea-luxury.ea-backend .modal-title {
     }
 
     .barber-hero h1 {
-        font-size: clamp(2.25rem, 12vw, 3.4rem);
+        font-size: clamp(32px, 10vw, var(--ea-text-4xl));
     }
 
     .barber-hero__actions {

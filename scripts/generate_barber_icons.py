@@ -60,6 +60,7 @@ ICONS = {
         "notifications": ("Notifications", '<path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/>'),
         "help": ("Help", '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4.3 1.8c-1.1 1.1-1.8 1.4-1.8 3.2m0 3h.01"/>'),
         "booking": ("Booking", '<rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4m8-4v4M4 9h16m-12 4h2m4 0h2m-8 4h2"/>'),
+        "clock": ("Clock", '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
     },
     "status": {
         "pending": ("Pending", '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),

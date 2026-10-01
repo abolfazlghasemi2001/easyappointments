@@ -11,41 +11,45 @@ $locale = strtolower((string) config('language_code', 'en'));
 $is_persian = str_starts_with($locale, 'fa');
 $copy = $is_persian
     ? [
-        'eyebrow' => 'آراستگی، با امضای شما',
-        'headline' => 'وقتِ یک انتخاب دقیق است.',
-        'description' => 'از انتخاب خدمت تا ثبت نهایی نوبت، همه‌چیز روشن و ساده است؛ شما زمان مناسب را انتخاب کنید، ما با دقت منتظرتان هستیم.',
-        'book' => 'رزرو نوبت',
-        'guide' => 'راهنمای کوتاه',
-        'services_kicker' => 'خدمات اختصاصی',
-        'services_title' => 'جزئیات، تفاوت را می‌سازند.',
-        'services_description' => 'خدمت دلخواهتان را انتخاب کنید تا ادامهٔ رزرو از همان‌جا آماده شود.',
-        'team_kicker' => 'تیم ما',
-        'team_title' => 'آرایشگر خودتان را انتخاب کنید.',
-        'team_description' => 'با انتخاب هر عضو تیم، خدمت‌های در دسترس او نمایش داده می‌شود.',
-        'promises_kicker' => 'تجربهٔ شما',
-        'promises_title' => 'آرام، دقیق، به‌موقع.',
-        'promise_one_title' => 'انتخاب شفاف',
-        'promise_one_text' => 'مدت و هزینهٔ خدمت را پیش از ثبت نوبت می‌بینید.',
-        'promise_two_title' => 'زمان برای شماست',
-        'promise_two_text' => 'از تقویم شمسی، روز و ساعت مناسب خودتان را انتخاب کنید.',
-        'promise_three_title' => 'رزرو ساده',
-        'promise_three_text' => 'مراحل کوتاه و روشن‌اند؛ جزئیات قبل از تأیید نهایی مرور می‌شوند.',
-        'minutes' => 'دقیقه',
-        'select_service' => 'انتخاب خدمت',
-        'select_provider' => 'انتخاب آرایشگر',
-        'starting_price' => 'هزینه',
-        'contact_for_price' => 'استعلام هزینه',
-        'team_member' => 'عضو تیم',
-        'no_service_description' => 'برای دیدن جزئیات، این خدمت را انتخاب کنید.',
-        'carousel_services' => 'خدمات قابل رزرو',
-        'carousel_team' => 'آرایشگران قابل رزرو',
-        'carousel_item_label' => 'رفتن به اسلاید',
-        'controls' => 'کنترل‌ها',
-        'slides' => 'اسلایدها',
-        'previous' => 'قبلی',
-        'next' => 'بعدی',
-        'scroll' => 'برای دیدن خدمات پایین بروید',
-        'help_label' => 'باز کردن راهنمای رزرو',
+        'eyebrow' => lang('showcase_eyebrow'),
+        'headline' => lang('showcase_headline'),
+        'description' => lang('showcase_description'),
+        'book' => lang('showcase_book'),
+        'guide' => lang('showcase_guide'),
+        'services_kicker' => lang('showcase_services_kicker'),
+        'services_title' => lang('showcase_services_title'),
+        'services_description' => lang('showcase_services_description'),
+        'team_kicker' => lang('showcase_team_kicker'),
+        'team_title' => lang('showcase_team_title'),
+        'team_description' => lang('showcase_team_description'),
+        'promises_kicker' => lang('showcase_promises_kicker'),
+        'promises_title' => lang('showcase_promises_title'),
+        'promise_one_title' => lang('showcase_promise_one_title'),
+        'promise_one_text' => lang('showcase_promise_one_text'),
+        'promise_two_title' => lang('showcase_promise_two_title'),
+        'promise_two_text' => lang('showcase_promise_two_text'),
+        'promise_three_title' => lang('showcase_promise_three_title'),
+        'promise_three_text' => lang('showcase_promise_three_text'),
+        'minutes' => lang('showcase_minutes'),
+        'select_service' => lang('showcase_select_service'),
+        'select_provider' => lang('showcase_select_provider'),
+        'starting_price' => lang('showcase_starting_price'),
+        'contact_for_price' => lang('showcase_ask_for_price'),
+        'team_member' => lang('showcase_team_member'),
+        'no_service_description' => lang('showcase_service_description_fallback'),
+        'book_service' => lang('showcase_book_service'),
+        'carousel_services' => lang('showcase_carousel_services'),
+        'carousel_team' => lang('showcase_carousel_team'),
+        'carousel_item_label' => lang('showcase_carousel_item_label'),
+        'controls' => lang('showcase_controls'),
+        'slides' => lang('showcase_slides'),
+        'previous' => lang('previous'),
+        'next' => lang('next'),
+        'scroll' => lang('showcase_scroll'),
+        'help_label' => lang('showcase_help_label'),
+        'intro_title' => lang('showcase_intro_title'),
+        'intro_description' => lang('showcase_intro_description'),
+        'booking_guide' => lang('showcase_booking_guide'),
     ]
     : [
         'eyebrow' => 'Grooming, with your signature',
@@ -74,6 +78,7 @@ $copy = $is_persian
         'contact_for_price' => 'Ask for price',
         'team_member' => 'Team member',
         'no_service_description' => 'Select this service to see the available details.',
+        'book_service' => 'Book this service',
         'carousel_services' => 'Bookable services',
         'carousel_team' => 'Available barbers',
         'carousel_item_label' => 'Go to slide',
@@ -83,6 +88,9 @@ $copy = $is_persian
         'next' => 'Next',
         'scroll' => 'Scroll to explore services',
         'help_label' => 'Open booking guide',
+        'intro_title' => 'Your next visit starts here.',
+        'intro_description' => 'Choose a service, barber and time.',
+        'booking_guide' => 'Booking guide',
     ];
 
 $icon_sprite = asset_url('assets/img/icons/sprite.svg');
@@ -139,8 +147,7 @@ $icon_sprite = asset_url('assets/img/icons/sprite.svg');
                         : $copy['contact_for_price'];
                     $service_label = trim((string) ($service['name'] ?? ''));
                     ?>
-                    <button type="button" class="service-showcase-card service-shortcut" data-service-id="<?= (int) $service['id'] ?>"
-                            aria-label="<?= e($copy['select_service'] . ': ' . $service_label) ?>">
+                    <article class="service-showcase-card">
                         <span class="service-showcase-card__icon" aria-hidden="true">
                             <svg class="ea-icon"><use href="<?= e($icon_sprite) ?>#barber-shop-<?= $index % 2 === 0 ? 'scissors' : 'razor' ?>"></use></svg>
                         </span>
@@ -148,10 +155,20 @@ $icon_sprite = asset_url('assets/img/icons/sprite.svg');
                         <h3><?= e($service_label) ?></h3>
                         <p><?= e(trim((string) ($service['description'] ?? '')) ?: $copy['no_service_description']) ?></p>
                         <span class="service-showcase-card__facts">
-                            <span><?= e(localize_digits($duration)) ?> <?= e($copy['minutes']) ?></span>
-                            <span class="service-showcase-card__price"><?= e($price_label) ?></span>
+                            <span class="service-showcase-card__duration">
+                                <svg class="ea-icon" aria-hidden="true"><use href="<?= e($icon_sprite) ?>#navigation-clock"></use></svg>
+                                <span><?= e(localize_digits($duration)) ?> <?= e($copy['minutes']) ?></span>
+                            </span>
+                            <span class="service-showcase-card__price">
+                                <span class="visually-hidden"><?= e($copy['starting_price']) ?>: </span><?= e($price_label) ?>
+                            </span>
                         </span>
-                    </button>
+                        <button type="button" class="service-showcase-card__action service-shortcut" data-service-id="<?= (int) $service['id'] ?>"
+                                aria-label="<?= e($copy['select_service'] . ': ' . $service_label) ?>">
+                            <?= e($copy['book_service']) ?>
+                            <svg class="ea-icon" aria-hidden="true"><use href="<?= e($icon_sprite) ?>#actions-check"></use></svg>
+                        </button>
+                    </article>
                 <?php endforeach; ?>
             </div>
             <div class="ea-carousel__controls" aria-label="<?= e($copy['carousel_services'] . ' ' . $copy['controls']) ?>">
@@ -233,10 +250,10 @@ $icon_sprite = asset_url('assets/img/icons/sprite.svg');
 <div id="booking-start" class="booking-intro-bar" data-tour="booking-start">
     <div>
         <span class="showcase-section__eyebrow"><?= e($copy['book']) ?></span>
-        <h2><?= e($is_persian ? 'نوبت بعدی‌تان را همین‌جا هماهنگ کنید.' : 'Your next visit starts here.') ?></h2>
-        <p><?= e($is_persian ? 'خدمت، آرایشگر و زمان را انتخاب کنید.' : 'Choose a service, barber and time.') ?></p>
+        <h2><?= e($copy['intro_title']) ?></h2>
+        <p><?= e($copy['intro_description']) ?></p>
     </div>
     <button type="button" class="btn btn-primary" data-start-booking-tour aria-label="<?= e($copy['help_label']) ?>">
-        <i class="fas fa-circle-question me-2" aria-hidden="true"></i><?= e($is_persian ? 'راهنمای رزرو' : 'Booking guide') ?>
+        <i class="fas fa-circle-question me-2" aria-hidden="true"></i><?= e($copy['booking_guide']) ?>
     </button>
 </div>
