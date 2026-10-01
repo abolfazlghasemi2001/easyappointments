@@ -3,14 +3,18 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="theme-color" content="#35A768">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#C9A961">
+    <link rel="manifest" href="<?= e(base_url('manifest.webmanifest')) ?>">
+    <link rel="canonical" href="<?= e(base_url()) ?>">
+    <link rel="preload" as="image" href="<?= asset_url('assets/img/barber-hero.jpg') ?>" fetchpriority="high">
     <meta name="google" content="notranslate">
 
-    <meta property="og:title" content="<?= lang('page_title') . ' ' . e(vars('company_name')) ?> | Easy!Appointments"/>
-    <meta property="og:description" content="Book Your Appointment With A Few Clicks"/>
-    <meta property="og:url" content="<?= base_url() ?>">
-    <meta property="og:image" content="<?= base_url('assets/img/social-card.png') ?>"/>
+    <meta name="description" content="<?= e(lang('page_title') . ' ' . vars('company_name')) ?> — رزرو آنلاین خدمات آرایشگاه مردانه، با انتخاب آرایشگر و زمان دلخواه.">
+    <meta property="og:title" content="<?= lang('page_title') . ' ' . e(vars('company_name')) ?> | <?= e(vars('company_name')) ?>"/>
+    <meta property="og:description" content="رزرو آنلاین خدمات آرایشگاه مردانه؛ خدمت، آرایشگر و زمان دلخواهتان را انتخاب کنید."/>
+    <meta property="og:url" content="<?= e(base_url()) ?>">
+    <meta property="og:image" content="<?= e(base_url('assets/img/barber-hero.jpg')) ?>"/>
     <meta property="og:type" content="website">
 
     <?php slot('meta'); ?>
@@ -29,13 +33,15 @@
 <?php if (is_rtl()): ?>
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/persian.css') ?>">
 <?php endif; ?>
+    <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/brand.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/components/spotlight.css') ?>">
 
     <?php component('company_color_style', ['company_color' => vars('company_color')]); ?>
 
     <?php slot('styles'); ?>
 </head>
 
-<body>
+<body class="ea-luxury ea-booking">
 <div id="main" class="container min-vh-100">
     <div class="row wrapper min-vh-100 justify-content-center align-items-center py-0 py-md-3">
         <div id="book-appointment-wizard" class="col-12 col-lg-10 col-xl-8 col-xxl-7 bg-body overflow-hidden p-0 my-auto">
@@ -83,6 +89,10 @@
 <script src="<?= asset_url('assets/vendor/flatpickr/flatpickr.min.js') ?>"></script>
 
 <script src="<?= asset_url('assets/js/app.js') ?>"></script>
+<script>window.EA_BASE_URL = <?= json_encode(rtrim(base_url(), '/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;</script>
+<script src="<?= asset_url('assets/js/utils/theme.js') ?>"></script>
+<script src="<?= asset_url('assets/js/utils/pwa.js') ?>"></script>
+<script src="<?= asset_url('assets/js/utils/spotlight-tour.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/date.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/jalali_date.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/jalali_picker.js') ?>"></script>

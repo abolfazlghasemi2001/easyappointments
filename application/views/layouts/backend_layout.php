@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="theme-color" content="#35A768">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#C9A961">
     <meta name="google" content="notranslate">
 
     <?php slot('meta'); ?>
@@ -25,12 +25,15 @@
 <?php if (is_rtl()): ?>
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/persian.css') ?>">
 <?php endif; ?>
+    <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/brand.css') ?>">
+    <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/components/spotlight.css') ?>">
 
     <?php component('company_color_style', ['company_color' => setting('company_color')]); ?>
 
     <?php slot('styles'); ?>
 </head>
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100 ea-luxury ea-backend"
+      data-ea-tour-role="<?= session('role_slug') === DB_SLUG_ADMIN ? 'admin' : (session('role_slug') === DB_SLUG_PROVIDER ? 'provider' : '') ?>">
 
 <main class="flex-shrink-0">
 
@@ -55,6 +58,8 @@
 <script src="<?= asset_url('assets/vendor/flatpickr/flatpickr.min.js') ?>"></script>
 
 <script src="<?= asset_url('assets/js/app.js') ?>"></script>
+<script src="<?= asset_url('assets/js/utils/theme.js') ?>"></script>
+<script src="<?= asset_url('assets/js/utils/spotlight-tour.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/date.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/jalali_date.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/jalali_picker.js') ?>"></script>
@@ -70,6 +75,7 @@
 
 <?php component('js_vars_script'); ?>
 <?php component('js_lang_script'); ?>
+<script src="<?= asset_url('assets/js/utils/tours/backend.js') ?>"></script>
 
 <?php slot('scripts'); ?>
 

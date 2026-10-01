@@ -31,7 +31,7 @@ class Config
     // ------------------------------------------------------------------------
 
     const BASE_URL = 'http://localhost';
-    const LANGUAGE = 'english';
+    const LANGUAGE = 'persian';
     const DEBUG_MODE = false;
 
     // ------------------------------------------------------------------------

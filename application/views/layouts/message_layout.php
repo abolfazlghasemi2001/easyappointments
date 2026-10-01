@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="<?= config('language_code') ?>">
+<html lang="<?= config('language_code') ?>" dir="<?= app_text_direction() ?>">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="theme-color" content="#35A768">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#C9A961">
     <meta name="google" content="notranslate">
 
     <?php slot('meta'); ?>
@@ -17,12 +17,20 @@
     <link rel="stylesheet" type="text/css"
           href="<?= asset_url('assets/css/themes/' . setting('theme', 'default') . '.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/general.css') ?>">
+<?php if (is_rtl()): ?>
+    <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/persian.css') ?>">
+<?php endif; ?>
+    <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/brand.css') ?>">
 
     <?php component('company_color_style', ['company_color' => vars('company_color')]); ?>
 
     <?php slot('styles'); ?>
 </head>
-<body>
+<body class="ea-luxury ea-message">
+<button type="button" class="ea-theme-toggle position-fixed top-0 end-0 m-3" data-ea-theme-toggle
+        aria-label="<?= e(lang('theme')) ?>" title="<?= e(lang('theme')) ?>">
+    <i class="fas fa-moon" aria-hidden="true"></i>
+</button>
 <div id="main" class="container min-vh-100">
     <div class="row wrapper min-vh-100 justify-content-center align-items-center py-3">
         <div id="message-frame" class="col-12 col-md-8 col-lg-6 my-auto frame-container text-center bg-body rounded shadow p-4 p-md-5">
@@ -68,9 +76,9 @@
 <script src="<?= asset_url('assets/vendor/moment-timezone/moment-timezone-with-data.min.js') ?>"></script>
 <script src="<?= asset_url('assets/vendor/@fortawesome-fontawesome-free/fontawesome.min.js') ?>"></script>
 <script src="<?= asset_url('assets/vendor/@fortawesome-fontawesome-free/solid.min.js') ?>"></script>
-<script src="<?= asset_url('assets/vendor/bootstrap/bootstrap.min.js') ?>"></script>
 
 <script src="<?= asset_url('assets/js/app.js') ?>"></script>
+<script src="<?= asset_url('assets/js/utils/theme.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/date.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/file.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/http.js') ?>"></script>

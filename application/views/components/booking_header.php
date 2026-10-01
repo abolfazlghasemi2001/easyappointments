@@ -8,7 +8,7 @@
 
 <div id="header" class="overflow-hidden p-3 p-md-4 d-flex flex-column flex-lg-row align-items-center bg-primary">
     <div id="company-name" class="d-block d-md-inline-block float-md-start text-center text-md-start text-white fs-4 fw-light my-3 my-md-0 mw-100 flex-grow-1" style="min-width: 0; line-height: 1.4;">
-        <img src="<?= vars('company_logo') ?: base_url('assets/img/logo.png') ?>" alt="logo" id="company-logo" 
+        <img src="<?= e(vars('company_logo') ?: base_url('assets/img/barber-mark.svg')) ?>" alt="<?= e($company_name) ?>" id="company-logo"
              class="d-block d-md-inline-block mx-auto mx-md-0 float-md-start me-md-3 mb-3 mb-md-0" style="max-height: 56px;">
 
         <span>
@@ -21,6 +21,11 @@
             </span>
         </div>
     </div>
+
+    <button type="button" class="ea-theme-toggle" data-ea-theme-toggle aria-pressed="false"
+            aria-label="<?= e(lang('theme')) ?>" title="<?= e(lang('theme')) ?>">
+        <i class="fas fa-moon" aria-hidden="true"></i>
+    </button>
 
     <div id="steps" class="d-block d-md-inline-block float-md-end overflow-hidden mx-auto my-3 my-md-1" style="width: 200px;">
         <div id="step-1" class="book-step active-step d-inline-block float-start rounded text-center bg-white"

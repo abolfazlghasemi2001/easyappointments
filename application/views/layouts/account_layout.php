@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="theme-color" content="#35A768">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#C9A961">
     <meta name="google" content="notranslate">
 
     <?php slot('meta'); ?>
@@ -21,12 +21,17 @@
 <?php if (is_rtl()): ?>
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/persian.css') ?>">
 <?php endif; ?>
+    <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/brand.css') ?>">
 
     <?php slot('styles'); ?>
 </head>
-<body>
+<body class="ea-luxury ea-account">
 
 <div class="d-flex align-items-center justify-content-center min-vh-100">
+    <button type="button" class="ea-theme-toggle position-fixed top-0 end-0 m-3" data-ea-theme-toggle
+            aria-label="<?= e(lang('theme')) ?>" title="<?= e(lang('theme')) ?>">
+        <i class="fas fa-moon" aria-hidden="true"></i>
+    </button>
 
     <div class="card w-100 shadow-sm min-vh-mobile" style="max-width: 500px;">
         <div class="card-body p-5">
@@ -52,6 +57,7 @@
 <script src="<?= asset_url('assets/vendor/@fortawesome-fontawesome-free/solid.min.js') ?>"></script>
 
 <script src="<?= asset_url('assets/js/app.js') ?>"></script>
+<script src="<?= asset_url('assets/js/utils/theme.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/date.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/jalali_date.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/jalali_picker.js') ?>"></script>

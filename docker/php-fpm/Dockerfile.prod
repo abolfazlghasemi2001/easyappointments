@@ -1,0 +1,87 @@
+# syntax=docker/dockerfile:1.7
+
+# Build the browser assets from source so production never depends on files that
+# are intentionally ignored by git (assets/vendor, compiled CSS and minified JS).
+FROM node:22-bookworm-slim AS frontend-assets
+WORKDIR /build
+COPY package.json package-lock.json gulpfile.js babel.config.json ./
+RUN npm ci --no-audit --no-fund
+COPY assets ./assets
+RUN npx gulp compile
+
+# Install PHP dependencies without shipping development or test packages.
+FROM composer:2 AS composer-dependencies
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-progress \
+    --prefer-dist \
+    --optimize-autoloader
+
+# A source-only stage is shared by PHP-FPM and Nginx to keep their document
+# roots in sync. The production config and runtime storage are mounted at run
+# time and are deliberately not baked into the image.
+FROM scratch AS application-source
+COPY . /var/www/html
+COPY --from=frontend-assets /build/assets /var/www/html/assets
+
+FROM php:8.4-fpm-bookworm AS php-runtime
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libcurl4-openssl-dev \
+        libfreetype6-dev \
+        libicu-dev \
+        libjpeg62-turbo-dev \
+        libldap2-dev \
+        libonig-dev \
+        libpng-dev \
+        libxml2-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
+    && docker-php-ext-install -j"$(nproc)" \
+        curl \
+        gd \
+        intl \
+        ldap \
+        mbstring \
+        mysqli \
+        opcache \
+        pdo_mysql \
+        soap \
+        sockets \
+        xml \
+    && apt-get purge -y --auto-remove \
+        libcurl4-openssl-dev \
+        libfreetype6-dev \
+        libicu-dev \
+        libjpeg62-turbo-dev \
+        libldap2-dev \
+        libonig-dev \
+        libpng-dev \
+        libxml2-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /var/www/html
+COPY --from=application-source --chown=root:root /var/www/html/ ./
+COPY --from=composer-dependencies --chown=root:root /app/vendor ./vendor
+COPY docker/php-fpm/production.ini /usr/local/etc/php/conf.d/99-production.ini
+
+RUN find /var/www/html -type d -exec chmod 0555 {} \; \
+    && find /var/www/html -type f -exec chmod 0444 {} \; \
+    && find /var/www/html/storage -type d -exec chmod 0750 {} \; \
+    && find /var/www/html/storage -type f -exec chmod 0640 {} \; \
+    && chown -R www-data:www-data /var/www/html/storage \
+    && chmod 0555 /var/www/html \
+    && chmod 0444 /var/www/html/index.php
+
+EXPOSE 9000
+CMD ["php-fpm"]
+
+FROM nginx:1.30-alpine AS nginx-runtime
+COPY docker/nginx/nginx.prod.conf /etc/nginx/conf.d/default.conf
+COPY --from=application-source /var/www/html /var/www/html
+EXPOSE 8080
+CMD ["nginx", "-g", "daemon off;"]

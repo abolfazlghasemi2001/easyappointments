@@ -30,7 +30,12 @@ if ($request_uri === '.') {
     $request_uri = '';
 }
 
-$config['base_url'] = rtrim(!is_cli() ? $protocol . $domain . $request_uri : Config::BASE_URL, '/');
+$cli_base_url = getenv('APP_URL');
+
+$config['base_url'] = rtrim(
+    !is_cli() ? $protocol . $domain . $request_uri : ($cli_base_url ?: Config::BASE_URL),
+    '/',
+);
 
 /*
 |--------------------------------------------------------------------------

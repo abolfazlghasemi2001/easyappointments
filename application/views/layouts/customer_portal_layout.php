@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="theme-color" content="#35A768">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#C9A961">
     <meta name="google" content="notranslate">
     <meta name="robots" content="noindex, nofollow">
 
@@ -25,13 +25,14 @@
 <?php if (is_rtl()): ?>
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/persian.css') ?>">
 <?php endif; ?>
+    <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/brand.css') ?>">
 
     <?php component('company_color_style', ['company_color' => vars('company_color')]); ?>
 
     <?php slot('styles'); ?>
 </head>
 
-<body>
+<body class="ea-luxury ea-customer-portal">
 <div id="main" class="container min-vh-100">
     <div class="row wrapper min-vh-100 justify-content-center align-items-start py-3">
         <div id="customer-portal" class="col-12 col-lg-10 col-xl-8 bg-body overflow-hidden p-0 my-auto">
@@ -60,6 +61,7 @@
 <script src="<?= asset_url('assets/vendor/moment-timezone/moment-timezone-with-data.min.js') ?>"></script>
 
 <script src="<?= asset_url('assets/js/app.js') ?>"></script>
+<script src="<?= asset_url('assets/js/utils/theme.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/date.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/jalali_date.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/http.js') ?>"></script>

@@ -1,0 +1,248 @@
+/* Accessible, dependency-free spotlight tour. The focused page element stays in the DOM. */
+.ea-tour-root {
+    position: fixed;
+    z-index: 9998;
+    inset: 0;
+    pointer-events: none;
+}
+
+.ea-tour-dimmer {
+    position: fixed;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    pointer-events: auto;
+}
+
+.ea-tour-dimmer--top,
+.ea-tour-dimmer--bottom {
+    right: 0;
+    left: 0;
+}
+
+.ea-tour-dimmer--left,
+.ea-tour-dimmer--right {
+    top: 0;
+    bottom: 0;
+}
+
+.ea-tour-ring {
+    position: fixed;
+    z-index: 9999;
+    border: 2px solid var(--ea-gold, #c9a961);
+    border-radius: 12px;
+    box-shadow: 0 0 0 4px var(--ea-gold, #c9a961), 0 0 0 8px rgba(201, 169, 97, 0.3), 0 0 0 12px rgba(201, 169, 97, 0.15);
+    pointer-events: none;
+    animation: ea-tour-pulse 2s ease-in-out infinite;
+    transition: top 220ms cubic-bezier(0.16, 1, 0.3, 1), left 220ms cubic-bezier(0.16, 1, 0.3, 1), width 220ms cubic-bezier(0.16, 1, 0.3, 1), height 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ea-tour-tooltip {
+    position: fixed;
+    z-index: 10000;
+    width: min(360px, calc(100vw - 32px));
+    padding: 24px;
+    border: 1px solid rgba(26, 26, 26, 0.06);
+    border-radius: 16px;
+    color: #1a1a1a;
+    background: #fff;
+    box-shadow: 0 18px 58px rgba(0, 0, 0, 0.24);
+    pointer-events: auto;
+    animation: ea-tour-in 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ea-tour-tooltip::before {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    content: '';
+    transform: rotate(45deg);
+    border: 1px solid rgba(26, 26, 26, 0.06);
+    background: #fff;
+}
+
+.ea-tour-tooltip[data-placement='bottom']::before {
+    top: -7px;
+    inset-inline-start: 28px;
+    border-inline-end: 0;
+    border-block-end: 0;
+}
+
+.ea-tour-tooltip[data-placement='top']::before {
+    bottom: -7px;
+    inset-inline-start: 28px;
+    border-inline-start: 0;
+    border-block-start: 0;
+}
+
+.ea-tour-tooltip[data-placement='left']::before {
+    inset-inline-end: -7px;
+    top: 28px;
+    border-inline-start: 0;
+    border-block-end: 0;
+}
+
+.ea-tour-tooltip[data-placement='right']::before {
+    inset-inline-start: -7px;
+    top: 28px;
+    border-inline-end: 0;
+    border-block-start: 0;
+}
+
+.ea-tour-tooltip[data-placement='center']::before {
+    display: none;
+}
+
+.ea-tour-tooltip__progress-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+    color: #6b6b6b;
+    font-size: 12px;
+}
+
+.ea-tour-tooltip__progress-track {
+    height: 3px;
+    margin-bottom: 18px;
+    overflow: hidden;
+    border-radius: 99px;
+    background: #e8e6e1;
+}
+
+.ea-tour-tooltip__progress-value {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #c9a961, #e5c88a);
+    transition: width 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ea-tour-tooltip__title {
+    margin: 0 0 9px;
+    color: #1a1a1a;
+    font-family: 'Estedad', 'Vazirmatn', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.ea-tour-tooltip__description {
+    margin: 0 0 22px;
+    color: #6b6b6b;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.ea-tour-tooltip__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.ea-tour-tooltip__group {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ea-tour-tooltip button {
+    min-height: 40px;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ea-tour-tooltip button:focus-visible {
+    outline: 3px solid rgba(201, 169, 97, 0.55);
+    outline-offset: 3px;
+}
+
+.ea-tour-tooltip__next {
+    color: #1a1a1a;
+    background: linear-gradient(135deg, #c9a961, #e5c88a);
+    box-shadow: 0 5px 14px rgba(201, 169, 97, 0.22);
+}
+
+.ea-tour-tooltip__back,
+.ea-tour-tooltip__later,
+.ea-tour-tooltip__skip {
+    color: #6b6b6b;
+    background: transparent;
+}
+
+.ea-tour-tooltip__back:hover,
+.ea-tour-tooltip__later:hover,
+.ea-tour-tooltip__skip:hover {
+    color: #1a1a1a;
+    background: #f5f3ee;
+}
+
+.ea-tour-tooltip__skip {
+    padding-inline: 6px !important;
+    font-size: 12px !important;
+}
+
+@keyframes ea-tour-pulse {
+    0%, 100% { box-shadow: 0 0 0 4px #c9a961, 0 0 0 8px rgba(201, 169, 97, 0.3); }
+    50% { box-shadow: 0 0 0 6px #c9a961, 0 0 0 12px rgba(201, 169, 97, 0.4); }
+}
+
+@keyframes ea-tour-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.94); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 575.98px) {
+    .ea-tour-tooltip {
+        width: min(90vw, 380px);
+        padding: 20px;
+    }
+
+    .ea-tour-tooltip__actions {
+        flex-wrap: wrap;
+    }
+
+    .ea-tour-tooltip__group {
+        margin-inline-start: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ea-tour-ring,
+    .ea-tour-tooltip,
+    .ea-tour-tooltip__progress-value {
+        animation: none;
+        transition: none;
+    }
+}
+
+html[data-bs-theme='dark'] .ea-tour-tooltip {
+    border-color: rgba(229, 200, 138, 0.18);
+    color: #f4f1ea;
+    background: #242421;
+}
+
+html[data-bs-theme='dark'] .ea-tour-tooltip::before {
+    border-color: rgba(229, 200, 138, 0.18);
+    background: #242421;
+}
+
+html[data-bs-theme='dark'] .ea-tour-tooltip__title {
+    color: #f4f1ea;
+}
+
+html[data-bs-theme='dark'] .ea-tour-tooltip__description,
+html[data-bs-theme='dark'] .ea-tour-tooltip__progress-label {
+    color: #b4b0a7;
+}
+
+html[data-bs-theme='dark'] .ea-tour-tooltip__progress-track {
+    background: #44433f;
+}

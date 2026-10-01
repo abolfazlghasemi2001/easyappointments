@@ -3,9 +3,9 @@
 <?php section('content'); ?>
 
 <div class="text-center mb-4">
-    <img src="<?= asset_url('assets/img/logo.png') ?>" 
-         alt="Easy!Appointments" class="shadow mb-3" width="72" height="72">
-    <h4 class="text-primary fw-semibold mb-1"><?= lang('backend_section') ?></h4>
+    <img src="<?= asset_url('assets/img/barber-mark.svg') ?>"
+         alt="<?= e(vars('company_name') ?: 'Easy!Appointments') ?>" class="shadow mb-3" width="72" height="72">
+    <h4 class="text-primary fw-semibold mb-1"><?= e(vars('company_name') ?: lang('backend_section')) ?></h4>
     <p class=" small mb-0"><?= lang('you_need_to_login') ?></p>
 </div>
 
@@ -20,7 +20,7 @@
             <span class="input-group-text bg-light border-end-0">
                 <i class="fas fa-user "></i>
             </span>
-            <input type="text" id="username" 
+            <input type="text" id="username" autocomplete="username"
                    placeholder="<?= lang('enter_username_here') ?>" class="form-control border-start-0 ps-2" required/>
         </div>
     </div>
@@ -33,7 +33,7 @@
             <span class="input-group-text bg-light border-end-0">
                 <i class="fas fa-lock "></i>
             </span>
-            <input type="password" id="password" 
+            <input type="password" id="password" autocomplete="current-password"
                    placeholder="<?= lang('enter_password_here') ?>" class="form-control border-start-0 ps-2" required/>
         </div>
     </div>
