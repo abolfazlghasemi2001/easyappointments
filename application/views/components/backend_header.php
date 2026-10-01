@@ -8,17 +8,27 @@
 ?>
 
 <nav id="header" class="navbar navbar-expand-md navbar-dark bg-primary p-0">
+    <?php $business_name = setting('company_name') ?: 'Easy!Appointments'; ?>
     <div id="header-logo" class="navbar-brand p-1 lh-1">
-        <img src="<?= base_url(
-            'assets/img/logo.png',
-        ) ?>" alt="logo" class="float-start me-2" style="width: 45px; height: 45px;">
-        <h6 class="mb-1 mt-1 fw-bold text-white" style="font-size: 15px;">EASY!APPOINTMENTS</h6>
-        <small class="d-block text-white-50" style="font-size: 12px;">Online Appointment Scheduler</small>
+        <img src="<?= e(setting('company_logo') ?: base_url('assets/img/barber-mark.svg')) ?>"
+             alt="<?= e($business_name) ?>" class="float-start me-2" style="width: 45px; height: 45px;">
+        <h6 class="mb-1 mt-1 fw-bold text-white" style="font-size: 15px;"><?= e($business_name) ?></h6>
+        <small class="d-block text-white-50" style="font-size: 12px;"><?= e(lang('backend_section')) ?></small>
     </div>
 
-    <button type="button" class="navbar-toggler me-1" data-bs-toggle="collapse" data-bs-target="#header-menu">
+    <button type="button" class="navbar-toggler me-1" data-bs-toggle="collapse" data-bs-target="#header-menu"
+            aria-controls="header-menu" aria-expanded="false" aria-label="<?= e(lang('menu')) ?>">
         <span class="navbar-toggler-icon"></span>
     </button>
+
+    <div class="ea-header-tools">
+        <button type="button" class="ea-theme-toggle" data-ea-theme-toggle aria-label="<?= e(lang('theme')) ?>" title="<?= e(lang('theme')) ?>">
+            <i class="fas fa-moon" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="ea-tour-help-button" data-ea-tour-help aria-label="<?= e(lang('help')) ?>" title="<?= e(lang('help')) ?>">
+            <i class="fas fa-circle-question" aria-hidden="true"></i>
+        </button>
+    </div>
 
     <div id="header-menu" class="collapse navbar-collapse flex-row-reverse px-2">
         <ul class="navbar-nav">
@@ -88,7 +98,7 @@
             <?php $active = $active_menu == PRIV_SYSTEM_SETTINGS ? 'active' : ''; ?>
             <li class="nav-item dropdown text-center <?= $active . $hidden ?>" style="min-width: 100px;">
                 <a class="nav-link dropdown-toggle text-white fw-light py-3 px-3" href="#" data-bs-toggle="dropdown"
-                   data-tippy-content="<?= lang('settings_hint') ?>">
+                   data-tour-settings data-tippy-content="<?= lang('settings_hint') ?>">
                     <i class="fas fa-user me-2"></i>
                     <?= e(vars('user_display_name')) ?>
                 </a>

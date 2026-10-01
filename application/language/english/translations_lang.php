@@ -589,4 +589,10 @@ $lang['recurring_annually'] = 'Repeats annually';
 $lang['recurring_annually_hint'] = 'The holiday will be applied to the same Jalali day of every year (e.g. Nowruz or the national holidays).';
 $lang['jalali_date'] = 'Jalali date';
 $lang['gregorian_date'] = 'Gregorian date';
+$lang['help'] = 'Help';
+$lang['menu'] = 'Menu';
+$lang['dark_mode'] = 'Dark mode';
+$lang['light_mode'] = 'Light mode';
+$lang['switch_to_light_mode'] = 'Switch to light mode';
+$lang['switch_to_dark_mode'] = 'Switch to dark mode';
 // End

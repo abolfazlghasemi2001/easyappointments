@@ -8,7 +8,7 @@
  */
 ?>
 
-<div id="wizard-frame-4" class="wizard-frame p-3 p-md-4" style="display:none;">
+<div id="wizard-frame-4" class="wizard-frame p-3 p-md-4" data-tour="booking-confirmation" style="display:none;">
     <div class="frame-container py-3" style="min-height: 500px;">
         <h2 class="frame-title fw-light text-center mb-4 text-muted"><?= lang('appointment_confirmation') ?></h2>
 

@@ -217,8 +217,17 @@ function vendor(done) {
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest('assets/vendor/flatpickr'));
 
-    // vazirmatn (Persian font)
+    // Self-hosted Persian fonts (SIL Open Font License).
     gulp.src(['node_modules/vazirmatn/fonts/webfonts/*.woff2']).pipe(gulp.dest('assets/vendor/vazirmatn/webfonts'));
+    gulp.src([
+        'node_modules/@fontsource/estedad/files/estedad-arabic-300-normal.woff2',
+        'node_modules/@fontsource/estedad/files/estedad-arabic-400-normal.woff2',
+        'node_modules/@fontsource/estedad/files/estedad-arabic-500-normal.woff2',
+        'node_modules/@fontsource/estedad/files/estedad-arabic-600-normal.woff2',
+        'node_modules/@fontsource/estedad/files/estedad-arabic-700-normal.woff2',
+        'node_modules/@fontsource/estedad/files/estedad-arabic-800-normal.woff2',
+    ]).pipe(gulp.dest('assets/vendor/estedad'));
+    gulp.src(['node_modules/@fontsource/estedad/LICENSE']).pipe(gulp.dest('assets/vendor/estedad'));
 
     done();
 }

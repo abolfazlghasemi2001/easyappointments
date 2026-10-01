@@ -12,7 +12,7 @@
 
         <div class="row frame-content">
             <div class="col col-lg-8 offset-md-2">
-                <div class="mb-3">
+                <div class="mb-3 booking-service-field" data-tour="booking-service">
                     <label for="select-service" class="fs-5 mb-2">
                         <strong><?= lang('service') ?></strong>
                     </label>
@@ -78,7 +78,7 @@
                     </select>
                 </div>
 
-                <div class="mb-3" hidden>
+                <div class="mb-3 booking-provider-field" data-tour="booking-provider" hidden>
                     <label for="select-provider" class="fs-5 mb-2">
                         <strong><?= lang('provider') ?></strong>
                     </label>

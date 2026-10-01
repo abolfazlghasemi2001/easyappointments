@@ -4,7 +4,9 @@ Welcome to the documentation pages of Easy!Appointments. Navigate through the av
 
 - [Installation](installation-guide.md)
 - [Update](update-guide.md)
-- [Docker](docker.md)
+- [Docker (development and production)](docker.md)
+- [Production deployment with Docker and HTTPS](fa/production-deployment.md)
+- [Persian luxury barber experience](fa/luxury-barber-experience.md)
 - [Console](console.md)
 - [REST API](rest-api.md)
 - [Google Calendar Sync](google-calendar-sync.md)

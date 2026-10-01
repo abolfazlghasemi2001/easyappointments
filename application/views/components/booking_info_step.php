@@ -21,7 +21,7 @@
  */
 ?>
 
-<div id="wizard-frame-3" class="wizard-frame p-3 p-md-4" style="display:none;">
+<div id="wizard-frame-3" class="wizard-frame p-3 p-md-4" data-tour="booking-customer-info" style="display:none;">
     <div class="frame-container py-3" style="min-height: 500px;">
 
         <h2 class="frame-title fw-light text-center mb-4 text-muted"><?= lang('customer_information') ?></h2>
@@ -36,7 +36,7 @@
                                 <span class="text-danger">*</span>
                             <?php endif; ?>
                         </label>
-                        <input type="text" id="first-name"
+                        <input type="text" id="first-name" autocomplete="given-name"
                                class="<?= $require_first_name ? 'required' : '' ?> form-control" maxlength="100"/>
                     </div>
                 <?php endif; ?>
@@ -49,7 +49,7 @@
                                 <span class="text-danger">*</span>
                             <?php endif; ?>
                         </label>
-                        <input type="text" id="last-name"
+                        <input type="text" id="last-name" autocomplete="family-name"
                                class="<?= $require_last_name ? 'required' : '' ?> form-control" maxlength="120"/>
                     </div>
                 <?php endif; ?>
@@ -62,7 +62,7 @@
                                 <span class="text-danger">*</span>
                             <?php endif; ?>
                         </label>
-                        <input type="text" id="email"
+                        <input type="email" id="email" autocomplete="email" inputmode="email" dir="ltr"
                                class="<?= $require_email ? 'required' : '' ?> form-control" maxlength="120"/>
                     </div>
                 <?php endif; ?>
@@ -75,7 +75,7 @@
                                 <span class="text-danger">*</span>
                             <?php endif; ?>
                         </label>
-                        <input type="text" id="phone-number" maxlength="60"
+                        <input type="tel" id="phone-number" maxlength="60" autocomplete="tel" inputmode="tel" dir="ltr"
                                class="<?= $require_phone_number ? 'required' : '' ?> form-control"/>
                     </div>
                 <?php endif; ?>

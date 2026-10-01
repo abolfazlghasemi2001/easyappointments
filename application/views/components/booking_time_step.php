@@ -12,7 +12,7 @@
         <h2 class="frame-title fw-light text-center mb-4 text-muted"><?= lang('appointment_date_and_time') ?></h2>
 
         <div class="row frame-content">
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-6 booking-date-field" data-tour="booking-date">
                 <div id="select-date" class="mx-auto my-4"></div>
 
             </div>
@@ -29,7 +29,7 @@
                         ]); ?>
                     </div>
 
-                    <div id="available-hours" class="overflow-auto my-3 pe-2" style="max-height: 250px;"></div>
+                    <div id="available-hours" data-tour="booking-time" class="overflow-auto my-3 pe-2" style="max-height: 250px;"></div>
 
                 </div>
             </div>

@@ -24,6 +24,7 @@
     "node": ">=14"
   },
   "dependencies": {
+    "@fontsource/estedad": "^5.3.0",
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@fullcalendar/moment": "^6.1.19",
     "@popperjs/core": "^2.11.8",
@@ -67,6 +68,6 @@
     "start": "npx --yes gulp",
     "build": "npx gulp build",
     "docs": "npx gulp docs",
-    "test:js": "node tests/js/jalali_picker.test.mjs"
+    "test:js": "node tests/js/jalali_picker.test.mjs && node tests/js/spotlight_tour.test.mjs && node tests/js/luxury_interactions.test.mjs"
   }
 }

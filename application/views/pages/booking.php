@@ -8,6 +8,16 @@
 
 <?php else: ?>
 
+<?php if (!vars('manage_mode')): ?>
+    <?php component('barber_showcase', [
+        'available_services' => vars('available_services'),
+        'available_providers' => vars('available_providers'),
+        'company_name' => vars('company_name'),
+    ]); ?>
+<?php endif; ?>
+
+<div id="booking-flow" aria-label="<?= e(lang('service_and_provider')) ?>">
+
 <!-- Booking Cancellation Frame -->
 
 <?php component('booking_cancellation_frame', [
@@ -53,6 +63,8 @@
     'display_privacy_policy' => vars('display_privacy_policy'),
 ]); ?>
 
+</div>
+
 <?php endif; ?>
 
 <?php end_section('content'); ?>
@@ -63,5 +75,9 @@
 <script src="<?= asset_url('assets/js/utils/ui.js') ?>"></script>
 <script src="<?= asset_url('assets/js/http/booking_http_client.js') ?>"></script>
 <script src="<?= asset_url('assets/js/pages/booking.js') ?>"></script>
+<script src="<?= asset_url('assets/js/utils/luxury-carousel.js') ?>"></script>
+<script src="<?= asset_url('assets/js/pages/booking-enhancements.js') ?>"></script>
+<script src="<?= asset_url('assets/js/utils/tours/onboarding.js') ?>"></script>
+<script src="<?= asset_url('assets/js/utils/tours/booking.js') ?>"></script>
 
 <?php end_section('scripts'); ?>

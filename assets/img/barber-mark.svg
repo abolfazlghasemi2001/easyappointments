@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Barber mark</title>
+  <rect x="2" y="2" width="60" height="60" rx="30" fill="#1a1a1a"/>
+  <g fill="none" stroke="#e5c88a" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4">
+    <circle cx="19" cy="20" r="7"/>
+    <circle cx="19" cy="44" r="7"/>
+    <path d="m24 24 23 23M24 40 47 17M24 24l10 10"/>
+    <path d="M47 14v36" stroke="#c9a961"/>
+  </g>
+</svg>

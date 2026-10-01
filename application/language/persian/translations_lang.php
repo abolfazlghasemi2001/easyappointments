@@ -589,4 +589,10 @@ $lang['recurring_annually'] = 'تکرار سالانه';
 $lang['recurring_annually_hint'] = 'این تعطیلی هر سال در همان روز تقویم جلالی اعمال می‌شود (مثل نوروز یا تعطیلات ملی).';
 $lang['jalali_date'] = 'تاریخ جلالی';
 $lang['gregorian_date'] = 'تاریخ میلادی';
+$lang['help'] = 'راهنما';
+$lang['menu'] = 'منو';
+$lang['dark_mode'] = 'حالت تیره';
+$lang['light_mode'] = 'حالت روشن';
+$lang['switch_to_light_mode'] = 'رفتن به حالت روشن';
+$lang['switch_to_dark_mode'] = 'رفتن به حالت تیره';
 // End
