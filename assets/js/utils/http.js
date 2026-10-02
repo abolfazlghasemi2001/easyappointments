@@ -39,16 +39,13 @@ window.App.Utils.Http = (function () {
             })
                 .then((response) => {
                     if (!response.ok) {
-                        response
+                        // FORK: return the rejection chain; never consume an error body twice.
+                        return response
                             .text()
                             .then((message) => {
                                 const error = new Error(message);
                                 error.status = response.status;
                                 throw error;
-                            })
-                            .catch((error) => {
-                                console.error(error);
-                                reject(error);
                             });
                     }
 
@@ -90,16 +87,13 @@ window.App.Utils.Http = (function () {
             })
                 .then((response) => {
                     if (!response.ok) {
-                        response
+                        // FORK: return the rejection chain; never consume an error body twice.
+                        return response
                             .text()
                             .then((message) => {
                                 const error = new Error(message);
                                 error.status = response.status;
                                 throw error;
-                            })
-                            .catch((error) => {
-                                console.error(error);
-                                reject(error);
                             });
                     }
 
@@ -140,16 +134,13 @@ window.App.Utils.Http = (function () {
             })
                 .then((response) => {
                     if (!response.ok) {
-                        response
+                        // FORK: return the rejection chain; never consume an error body twice.
+                        return response
                             .text()
                             .then((message) => {
                                 const error = new Error(message);
                                 error.status = response.status;
                                 throw error;
-                            })
-                            .catch((error) => {
-                                console.error(error);
-                                reject(error);
                             });
                     }
 

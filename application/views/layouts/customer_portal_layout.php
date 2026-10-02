@@ -16,8 +16,6 @@
     <link rel="icon" sizes="192x192" href="<?= asset_url('assets/img/logo.png') ?>">
 
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/vendor/bootstrap/bootstrap.min.css') ?>">
-    <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/vendor/@fortawesome-fontawesome-free/fontawesome.min.css') ?>">
-    <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/vendor/@fortawesome-fontawesome-free/solid.min.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/themes/' . vars('theme') . '.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/general.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/frontend.css') ?>">
@@ -26,6 +24,8 @@
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/persian.css') ?>">
 <?php endif; ?>
     <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/brand.css') ?>">
+    <!-- FORK: salon motion and accessible Jalali calendar styling. -->
+    <link rel="stylesheet" href="<?= asset_url('assets/css/components/barber-motion.css') ?>">
 
     <?php component('company_color_style', ['company_color' => vars('company_color')]); ?>
 
@@ -33,6 +33,7 @@
 </head>
 
 <body class="ea-luxury ea-customer-portal">
+<?php /* FORK: shared progressively enhanced loading feedback. */ component('barber_loading'); ?>
 <div id="main" class="container min-vh-100">
     <div class="row wrapper min-vh-100 justify-content-center align-items-start py-3">
         <div id="customer-portal" class="col-12 col-lg-10 col-xl-8 bg-body overflow-hidden p-0 my-auto">
@@ -60,6 +61,9 @@
 <script src="<?= asset_url('assets/vendor/moment/moment.min.js') ?>"></script>
 <script src="<?= asset_url('assets/vendor/moment-timezone/moment-timezone-with-data.min.js') ?>"></script>
 
+<!-- FORK: use the Font Awesome JS assets actually copied by gulp (CSS paths returned 404). -->
+<script src="<?= asset_url('assets/vendor/@fortawesome-fontawesome-free/fontawesome.min.js') ?>"></script>
+<script src="<?= asset_url('assets/vendor/@fortawesome-fontawesome-free/solid.min.js') ?>"></script>
 <script src="<?= asset_url('assets/js/app.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/theme.js') ?>"></script>
 <script src="<?= asset_url('assets/js/utils/date.js') ?>"></script>

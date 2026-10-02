@@ -22,10 +22,13 @@
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/persian.css') ?>">
 <?php endif; ?>
     <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/brand.css') ?>">
+    <!-- FORK: salon motion and accessible Jalali calendar styling. -->
+    <link rel="stylesheet" href="<?= asset_url('assets/css/components/barber-motion.css') ?>">
 
     <?php slot('styles'); ?>
 </head>
 <body class="ea-luxury ea-account">
+<?php /* FORK: shared progressively enhanced loading feedback. */ component('barber_loading'); ?>
 
 <div class="d-flex align-items-center justify-content-center min-vh-100">
     <button type="button" class="ea-theme-toggle position-fixed top-0 end-0 m-3" data-ea-theme-toggle

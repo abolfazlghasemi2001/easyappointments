@@ -9,7 +9,8 @@
     }
 
     function scrollToBooking() {
-        const target = document.getElementById('wizard-frame-1') || document.getElementById('booking-flow');
+        const target = Array.from(document.querySelectorAll('.wizard-frame')).find((frame) => frame.getClientRects().length) || document.getElementById('booking-flow');
+        if (target) target.style.scrollMarginBlockStart = (document.getElementById('header')?.offsetHeight || 0) + 24 + 'px';
         target?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     }
 
@@ -49,11 +50,7 @@
                 event.preventDefault();
                 if (global.EATours?.onboarding?.active) global.EATours.onboarding.finish();
                 scrollToBooking();
-                global.setTimeout(() => {
-                    if (!document.getElementById('ea-tour-root') && global.EATours?.booking) {
-                        global.EATours.booking.start();
-                    }
-                }, 650);
+
             });
         });
 

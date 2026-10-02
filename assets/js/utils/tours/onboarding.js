@@ -45,9 +45,7 @@
             button.addEventListener('click', () => global.EATours.onboarding.start({ force: true, resume: true }));
         });
 
-        if (!global.vars?.('manage_mode') && document.getElementById('barber-hero')) {
-            global.setTimeout(() => global.EATours.onboarding.start(), 900);
-        }
+        // Guidance is opt-in: never interrupt a customer who is already booking.
     }
 
     if (document.readyState === 'loading') {

@@ -200,6 +200,8 @@ window.App.Utils.JalaliPicker = (function () {
                             type: 'button',
                             class: 'ea-jalali-day-button',
                             text: jalali.toPersianDigits(dayNumber),
+                            'aria-label': `${jalali.toPersianDigits(dayNumber)} ${jalali.monthName(view.month)} ${jalali.toPersianDigits(view.year)}`,
+                            'aria-pressed': 'false',
                         });
 
                         if (isSheduleDisabled(instance, gregorianDate)) {
@@ -215,10 +217,12 @@ window.App.Utils.JalaliPicker = (function () {
                             selected.day === dayNumber
                         ) {
                             $cell.addClass('ea-jalali-selected');
+                            $button.attr('aria-pressed', 'true');
                         }
 
                         if (today.year === view.year && today.month === view.month && today.day === dayNumber) {
                             $cell.addClass('ea-jalali-today');
+                            $button.attr('aria-current', 'date');
                         }
 
                         $button.on('click', function (event) {

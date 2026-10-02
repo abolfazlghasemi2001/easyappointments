@@ -28,6 +28,9 @@ App.Http.Booking = (function () {
 
     const moment = window.moment;
 
+    // FORK: ignore out-of-order availability responses after rapid date changes.
+    let hoursRequestVersion = 0;
+
     let unavailableDatesBackup;
     let selectedDateStringBackup;
     let processingUnavailableDates = false;
@@ -43,6 +46,7 @@ App.Http.Booking = (function () {
      * @param {String} selectedDate The selected date of the available hours we need.
      */
     function getAvailableHours(selectedDate) {
+        const requestVersion = ++hoursRequestVersion;
         $availableHours.empty();
 
         // Find the selected service duration (it is going to be send within the "data" object).
@@ -75,7 +79,8 @@ App.Http.Booking = (function () {
             appointment_id: appointmentId,
         };
 
-        $.post(url, data).done((response) => {
+        return $.post(url, data).done((response) => {
+            if (requestVersion !== hoursRequestVersion) return;
             $availableHours.empty();
 
             // The response contains the available hours for the selected provider and service. Fill the available
