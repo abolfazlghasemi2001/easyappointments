@@ -1,0 +1,44 @@
+name: Render promo video
+
+on:
+  push:
+    branches: [promo]
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libraqm0 libfribidi0 libharfbuzz0b
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Pillow
+        run: pip install pillow
+
+      - name: Download fonts
+        run: |
+          mkdir -p promo/fonts
+          curl -fL -o "promo/fonts/Vazirmatn[wght].ttf" "https://github.com/google/fonts/raw/main/ofl/vazirmatn/Vazirmatn%5Bwght%5D.ttf"
+          curl -fL -o promo/fonts/Poppins-Bold.ttf https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Bold.ttf
+          curl -fL -o promo/fonts/Poppins-Regular.ttf https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Regular.ttf
+
+      - name: Render video
+        working-directory: promo
+        env:
+          FONT_DIR: fonts
+          OUT: easyappointments_promo.mp4
+        run: python render_promo.py
+
+      - name: Upload video
+        uses: actions/upload-artifact@v4
+        with:
+          name: easyappointments_promo
+          path: promo/easyappointments_promo.mp4
