@@ -27,6 +27,8 @@ await php.mount(REPO, createNodeFsMountHandler(REPO));
 
 const handler = new PHPRequestHandler({
     php,
+    // The HTTP server must use each browser's cookies, not a shared CLI cookie jar.
+    cookieStore: false,
     documentRoot: REPO,
     absoluteUrl: `http://localhost:${PORT}`,
 });
@@ -57,7 +59,8 @@ const server = http.createServer(async (request, response) => {
                 continue;
             }
 
-            headers[name] = Array.isArray(values) ? values.join(', ') : values;
+            // Set-Cookie headers must remain separate (Expires itself contains commas).
+            headers[name] = lower === 'set-cookie' ? values : (Array.isArray(values) ? values.join(', ') : values);
         }
 
         response.writeHead(result.httpStatusCode || 200, headers);

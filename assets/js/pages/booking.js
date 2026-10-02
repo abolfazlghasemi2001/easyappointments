@@ -427,6 +427,16 @@ App.Pages.Booking = (function () {
          * This handler is triggered every time the user pressed the "next" button on the book wizard.
          * Some special tasks might be performed, depending on the current wizard step.
          */
+        // FORK: focus the new heading instead of sending customers back to the hero.
+        function focusBookingStep(index) {
+            const frame = document.getElementById('wizard-frame-' + index);
+            const heading = frame?.querySelector('h2');
+            heading?.setAttribute('tabindex', '-1');
+            heading?.focus({ preventScroll: true });
+            if (frame) frame.style.scrollMarginBlockStart = (document.getElementById('header')?.offsetHeight || 0) + 24 + 'px';
+            frame?.scrollIntoView({ block: 'start', behavior: 'auto' });
+        }
+
         $('.button-next').on('click', (event) => {
             const $target = $(event.currentTarget);
 
@@ -488,14 +498,11 @@ App.Pages.Booking = (function () {
                 .parents()
                 .eq(1)
                 .fadeOut(() => {
-                    $('#wizard-frame-' + nextTabIndex).fadeIn();
+                    // FORK: keep the active step in view below the landing page and sticky header.
+                    $('#wizard-frame-' + nextTabIndex).fadeIn(() => {
+                        if (!event.isTrigger) focusBookingStep(nextTabIndex);
+                    });
                 });
-
-            // Scroll to the top of the page. On a small screen, especially on a mobile device, this is very useful.
-            const scrollingElement = document.scrollingElement || document.body;
-            if (window.innerHeight < scrollingElement.scrollHeight) {
-                scrollingElement.scrollTop = 0;
-            }
         });
 
         /**
@@ -515,7 +522,7 @@ App.Pages.Booking = (function () {
                 .parents()
                 .eq(1)
                 .fadeOut(() => {
-                    $('#wizard-frame-' + prevTabIndex).fadeIn();
+                    $('#wizard-frame-' + prevTabIndex).fadeIn(() => focusBookingStep(prevTabIndex));
                 });
         });
 

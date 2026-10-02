@@ -1,0 +1,331 @@
+/* Shared salon motion and booking refinements; logical properties preserve RTL. */
+.ea-page-loader[hidden],
+.ea-request-loader[hidden] {
+    display: none !important;
+}
+.ea-page-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+    color: #e5c88a;
+    background: #151815;
+    background-image: radial-gradient(ellipse at center, #33352b 0, transparent 68%);
+}
+.ea-loader-studio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 28px;
+    text-align: center;
+    strong {
+        color: #faf9f6;
+        font-size: clamp(22px, 4vw, 32px);
+    }
+    > span:not([class]) {
+        color: #c5c8bc;
+        font-size: 14px;
+    }
+}
+.ea-loader-kicker {
+    font: 10px/2 sans-serif;
+    letter-spacing: 3px;
+}
+.ea-loader-scissors {
+    width: 120px;
+    height: 120px;
+}
+.ea-scissor-blade {
+    transform-origin: 60px 61px;
+    animation: ea-snip 1.2s ease-in-out infinite alternate;
+}
+.ea-scissor-blade:nth-child(2) {
+    animation-direction: alternate-reverse;
+}
+.ea-barber-pole {
+    display: block;
+    width: 100px;
+    height: 6px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: repeating-linear-gradient(120deg, #c9a961 0 12px, #f5f3ee 12px 24px, #536156 24px 36px);
+    background-size: 84px 100%;
+    animation: ea-pole 1.6s linear infinite;
+}
+.ea-request-loader {
+    position: fixed;
+    inset-block-end: 24px;
+    inset-inline-start: 24px;
+    z-index: 1080;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 24px;
+    border: 1px solid #c9a961;
+    color: #f5f3ee;
+    background: #202820;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px #0003;
+    pointer-events: none;
+    font-size: 13px;
+}
+@keyframes ea-snip {
+    from {
+        transform: rotate(-9deg);
+    }
+    to {
+        transform: rotate(9deg);
+    }
+}
+@keyframes ea-pole {
+    to {
+        background-position: 84px 0;
+    }
+}
+@keyframes ea-arrive {
+    from {
+        opacity: 0.45;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+.ea-entered {
+    animation: ea-arrive 0.65s var(--ea-ease-out, ease-out) both;
+}
+body.ea-booking {
+    #steps {
+        display: flex !important;
+        align-items: center;
+        gap: 10px;
+        overflow: visible !important;
+    }
+    #steps .book-step {
+        flex-shrink: 0;
+        margin: 0 !important;
+    }
+    .wizard-frame {
+        scroll-margin-block-start: 170px;
+    }
+    .wizard-frame .frame-title {
+        color: var(--ea-ink) !important;
+    }
+    .service-shortcut,
+    .provider-shortcut {
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            border-color 0.25s ease;
+    }
+    .service-shortcut:hover,
+    .provider-shortcut:hover {
+        transform: translateY(-5px);
+        border-color: var(--ea-gold);
+    }
+    .barber-hero__copy {
+        background: linear-gradient(120deg, #121a16e8, #121a16b0);
+        backdrop-filter: blur(5px);
+    }
+    .barber-hero__eyebrow {
+        letter-spacing: 0.04em;
+    }
+    .barber-hero h1 {
+        line-height: 1.5;
+    }
+    #available-hours {
+        scrollbar-width: thin;
+        scrollbar-color: var(--ea-gold) transparent;
+    }
+    .available-hour {
+        min-height: 44px;
+    }
+    .selected-hour {
+        box-shadow: inset 0 0 0 2px var(--ea-gold-dark) !important;
+    }
+}
+/* The custom Jalali grid replaces flatpickr's days and needs its own layout. */
+.ea-jalali-wrapper {
+    padding: 12px;
+    width: 100%;
+    color: var(--ea-ink, #1a1a1a);
+}
+.ea-jalali-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.ea-jalali-title {
+    font-weight: 700;
+    font-size: 15px;
+}
+.ea-jalali-nav,
+.ea-jalali-day-button {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-height: 38px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition:
+        background 0.18s,
+        color 0.18s;
+    &:hover:not(:disabled) {
+        background: var(--ea-cloud, #e8e6e1);
+    }
+    &:focus-visible {
+        outline: 2px solid var(--ea-gold-dark, #9a7f45);
+        outline-offset: 1px;
+    }
+}
+.ea-jalali-nav {
+    width: 38px;
+    font-size: 24px;
+    background: var(--ea-cream, #f5f3ee);
+}
+.ea-jalali-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 2px;
+    th {
+        text-align: center !important;
+        padding-block: 8px;
+        font-size: 11px;
+        color: var(--ea-slate, #6b6b6b);
+    }
+    td {
+        padding: 0;
+        text-align: center !important;
+    }
+}
+.ea-jalali-disabled .ea-jalali-day-button {
+    opacity: 0.32;
+    cursor: not-allowed;
+}
+.ea-jalali-today .ea-jalali-day-button {
+    border-color: var(--ea-gold, #c9a961);
+}
+.ea-jalali-selected .ea-jalali-day-button {
+    background: var(--ea-gold, #c9a961) !important;
+    color: #171c17;
+    font-weight: 700;
+}
+@media (max-width: 575px) {
+    .ea-request-loader {
+        inset-inline: 16px;
+        inset-block-end: 16px;
+    }
+    body.ea-booking #header {
+        gap: 10px;
+    }
+    body.ea-booking .barber-hero__copy {
+        padding: 24px;
+    }
+    body.ea-booking .barber-hero {
+        min-height: 530px;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ea-luxury *,
+    .ea-luxury *::before,
+    .ea-luxury *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}
+/* Keep account controls above the card, including on narrow RTL screens. */
+body.ea-account .ea-theme-toggle {
+    z-index: 5;
+}
+body.ea-account .card-body {
+    padding-top: 64px !important;
+}
+html[data-bs-theme='dark'] .flatpickr-calendar {
+    background: #222923;
+    border-color: #465047;
+    box-shadow: 0 12px 32px #0004;
+    .ea-jalali-wrapper {
+        color: #f5f3ee;
+    }
+    .ea-jalali-table th {
+        color: #bcc7bd;
+    }
+}
+@media (max-width: 767px) {
+    body.ea-booking #header {
+        display: grid !important;
+        grid-template-columns: 1fr auto;
+        gap: 8px 16px;
+        padding: 12px 20px !important;
+    }
+    body.ea-booking #company-name {
+        font-size: 16px !important;
+        justify-content: flex-start;
+    }
+    body.ea-booking #company-logo {
+        width: 30px;
+        height: 30px;
+    }
+    body.ea-booking #company-name > div {
+        display: none !important;
+    }
+    body.ea-booking #steps {
+        grid-column: 1 / -1;
+        justify-content: center;
+    }
+    body.ea-booking #steps .book-step {
+        width: 30px !important;
+        height: 30px !important;
+        padding: 4px !important;
+    }
+    body.ea-booking #steps .book-step strong {
+        font-size: 13px !important;
+    }
+}
+body.ea-customer-portal {
+    #steps,
+    .display-booking-selection {
+        display: none !important;
+    }
+    #header {
+        background: #202820 !important;
+        padding: 24px !important;
+        gap: 16px;
+    }
+    #customer-portal {
+        border: 1px solid var(--ea-cloud);
+        border-radius: 24px;
+        box-shadow: var(--ea-shadow-card);
+    }
+}
+/* A single-service salon should not look like an almost-empty carousel. */
+@media (min-width: 992px) {
+    #barber-services .showcase-section__inner:has(.service-showcase-card:only-child),
+    #barber-team .showcase-section__inner:has(.provider-showcase-card:only-child) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: 64px;
+        .showcase-section__heading {
+            margin-bottom: 0;
+        }
+        .ea-carousel__track {
+            grid-auto-columns: 100%;
+        }
+        .service-showcase-card {
+            min-height: 320px;
+        }
+    }
+}

@@ -34,6 +34,8 @@
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/persian.css') ?>">
 <?php endif; ?>
     <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/brand.css') ?>">
+    <!-- FORK: salon motion and accessible Jalali calendar styling. -->
+    <link rel="stylesheet" href="<?= asset_url('assets/css/components/barber-motion.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/components/spotlight.css') ?>">
 
     <?php component('company_color_style', ['company_color' => vars('company_color')]); ?>
@@ -42,6 +44,7 @@
 </head>
 
 <body class="ea-luxury ea-booking">
+<?php /* FORK: shared progressively enhanced loading feedback. */ component('barber_loading'); ?>
 <div id="main" class="container min-vh-100">
     <div class="row wrapper min-vh-100 justify-content-center align-items-center py-0 py-md-3">
         <div id="book-appointment-wizard" class="col-12 col-lg-10 col-xl-8 col-xxl-7 bg-body overflow-hidden p-0 my-auto">

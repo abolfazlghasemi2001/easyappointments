@@ -104,3 +104,25 @@ The production server currently runs files that are **not** in this repository
 - commit the production `Dockerfile` and the hardened `docker/nginx/*.conf`
   (must deny `/storage`, `/application`, `/system`, `/docs`, `/dev`, `/tests`, `/config.php`),
 - add `.env.example` and an `.env` loader, and make the app fail fast when a required key is missing.
+
+## Chromium salon UX audit — 2026-10-01
+
+- Shared layouts (`booking_layout.php`, `account_layout.php`, `backend_layout.php`,
+  `customer_portal_layout.php`): additive `barber_loading` component and `barber-motion.css`
+  include, marked `FORK:`. Loading markup and motion live in new files, not the upstream layouts.
+- `customer_portal_layout.php`: replace two missing Font Awesome CSS files with the existing
+  JS bundles provided by gulp. The old references produced HTTP 404s and missing icons.
+- `assets/js/pages/booking.js`: focus/scroll to the actual new wizard frame after user navigation,
+  not the top of the landing page; synthetic auto-selection never scrolls past the hero.
+- `assets/js/http/booking_http_client.js`: request generation guard prevents older available-hours
+  responses from overwriting the latest date's hours.
+- `assets/js/utils/http.js`: return the rejected response chain instead of reading a failed HTTP
+  response body twice; preserve original status and error message for all three request helpers.
+- Fork-only enhancements: opt-in tours, active-frame shortcuts, Jalali date ARIA labels,
+  compact mobile header, actual Jalali grid styles, single-card layout, dark-mode calendar,
+  accessible/reduced-motion loading and entrance animations.
+- `dev/sandbox/server.mjs`: disable php-wasm's shared CLI cookie store for the HTTP server and
+  forward separate `Set-Cookie` headers. Different browsers must not inherit each other's login/language.
+- Additive tests: `tests/js/barber_experience.test.mjs`, `tests/browser/barber_smoke.mjs`.
+  Playwright is a development dependency only. Local screenshots stay in ignored `storage/review/`.
+- Build and audit instructions/results: `docs/fa/2026-10-01-salon-ux-audit.md`.

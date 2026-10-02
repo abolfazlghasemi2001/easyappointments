@@ -26,6 +26,8 @@
     <link rel="stylesheet" type="text/css" href="<?= asset_url('assets/css/persian.css') ?>">
 <?php endif; ?>
     <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/brand.css') ?>">
+    <!-- FORK: salon motion and accessible Jalali calendar styling. -->
+    <link rel="stylesheet" href="<?= asset_url('assets/css/components/barber-motion.css') ?>">
     <link rel="stylesheet" type="text/css" href="<?= app_asset_url('assets/css/components/spotlight.css') ?>">
 
     <?php component('company_color_style', ['company_color' => setting('company_color')]); ?>
@@ -34,6 +36,7 @@
 </head>
 <body class="d-flex flex-column h-100 ea-luxury ea-backend"
       data-ea-tour-role="<?= session('role_slug') === DB_SLUG_ADMIN ? 'admin' : (session('role_slug') === DB_SLUG_PROVIDER ? 'provider' : '') ?>">
+<?php /* FORK: shared progressively enhanced loading feedback. */ component('barber_loading'); ?>
 
 <main class="flex-shrink-0">
 
